@@ -689,10 +689,26 @@
   <div class="visual">
     <div class="floating-badge">庫洛米主題很可愛吧 ✦</div>
     <div class="moon"></div>
-
     <img src="https://stickershop.line-scdn.net/stickershop/v1/product/18811/LINEStorePC/main.png?v=1" 
          class="kuromi-pic">
+.visual{
+  min-height: 420px;
+  position: relative;
+  overflow: hidden;
+}
 
+.kuromi-pic{
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 260px;
+  max-width: 70%;
+  height: auto;
+  object-fit: contain;
+  z-index: 3;
+  display: block;
+}
     <div class="bubble">
       開開心心吃飯吧！！<br>
       我會準備好甜點的！！
