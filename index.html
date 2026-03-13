@@ -233,6 +233,7 @@
   object-fit:contain;
   z-index:3;
   display:block;
+  animation: kuromiHeroFloat 2.6s ease-in-out infinite;
 }
 
 .moon{
@@ -699,6 +700,23 @@
   }
   100%{
     transform: translateY(0) scale(1);
+  }
+}
+    @keyframes kuromiHeroFloat{
+  0%{
+    transform: translateX(-50%) translateY(0) rotate(0deg);
+  }
+  25%{
+    transform: translateX(-50%) translateY(-6px) rotate(-2deg);
+  }
+  50%{
+    transform: translateX(-50%) translateY(-12px) rotate(0deg);
+  }
+  75%{
+    transform: translateX(-50%) translateY(-6px) rotate(2deg);
+  }
+  100%{
+    transform: translateX(-50%) translateY(0) rotate(0deg);
   }
 }
   </style>
