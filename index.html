@@ -219,11 +219,44 @@
   border-radius:28px;
   position:relative;
   overflow:hidden;
-  background:
-    url("https://www.google.com/imgres?q=%E5%BA%AB%E6%B4%9B%E7%B1%B3%E5%9C%96%E7%89%87&imgurl=https%3A%2F%2Fstickershop.line-scdn.net%2Fstickershop%2Fv1%2Fproduct%2F18811%2FLINEStorePC%2Fmain.png%3Fv%3D1&imgrefurl=https%3A%2F%2Fstore.line.me%2Fsearch%2Fzh-Hant%3Fq%3D%25E9%2585%25B7%25E6%25B4%259B%25E7%25B1%25B3&docid=l5Tum-a4oF8-6M&tbnid=nwUFRS-LLkaajM&vet=12ahUKEwiQssPbhJ2TAxVsslYBHWyJMbkQnPAOegQIMxAB..i&w=240&h=240&hcb=2&ved=2ahUKEwiQssPbhJ2TAxVsslYBHWyJMbkQnPAOegQIMxAB") no-repeat center bottom,
-    linear-gradient(180deg,#341d43 0%,#1b0c22 100%);
-  background-size:320px, cover;
-    }
+  background: linear-gradient(180deg,#341d43 0%,#1b0c22 100%);
+}
+
+.kuromi-pic{
+  position:absolute;
+  left:50%;
+  bottom:10px;
+  transform:translateX(-50%);
+  width:240px;
+  max-width:70%;
+  height:auto;
+  object-fit:contain;
+  z-index:3;
+  display:block;
+}
+
+.moon{
+  z-index:1;
+}
+
+.floating-badge{
+  z-index:4;
+}
+
+.bubble{
+  position:absolute;
+  right:20px;
+  bottom:18px;
+  max-width:190px;
+  padding:12px 14px;
+  border-radius:18px 18px 18px 6px;
+  background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.08);
+  color:#fff2fb;
+  line-height:1.7;
+  font-size:14px;
+  z-index:4;
+}
     .moon {
       position: absolute;
       top: 26px;
@@ -685,37 +718,25 @@
         </div>
       </div>
 
-     <div class="hero-card">
+<div class="hero-card">
   <div class="visual">
     <div class="floating-badge">庫洛米主題很可愛吧 ✦</div>
     <div class="moon"></div>
-    <img src="https://stickershop.line-scdn.net/stickershop/v1/product/18811/LINEStorePC/main.png?v=1" 
-         class="kuromi-pic">
-.visual{
-  min-height: 420px;
-  position: relative;
-  overflow: hidden;
-}
 
-.kuromi-pic{
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  transform: translateX(-50%);
-  width: 260px;
-  max-width: 70%;
-  height: auto;
-  object-fit: contain;
-  z-index: 3;
-  display: block;
-}
+    <img
+      src="https://stickershop.line-scdn.net/stickershop/v1/product/18811/LINEStorePC/main.png?v=1"
+      class="kuromi-pic"
+      alt="Kuromi"
+    >
+
     <div class="bubble">
       開開心心吃飯吧！！<br>
       我會準備好甜點的！！
     </div>
   </div>
 </div>
-
+</section>
+    
     <section class="section" id="restaurants">
       <div class="section-head">
         <div>
