@@ -650,6 +650,23 @@
     transform: translateX(-50%) translateY(0) rotate(0deg);
   }
 }
+    #gameKuromi{
+  position: fixed;
+  left: 20px;
+  top: 120px;
+  width: 88px;
+  height: auto;
+  z-index: 999;
+  cursor: pointer;
+  display: none;
+  user-select: none;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,.35));
+  transition: left .35s ease, top .35s ease, transform .2s ease;
+}
+
+#gameKuromi:hover{
+  transform: scale(1.06);
+}
   </style>
 </head>
 <body>
@@ -665,10 +682,11 @@
   </div>
 </div>
       <nav class="nav">
-        <a href="#restaurants">餐廳選擇</a>
-        <a href="#time">時間選擇</a>
-        <a href="#invite">邀約預覽</a>
-      </nav>
+  <a href="#restaurants">餐廳選擇</a>
+  <a href="#time">時間選擇</a>
+  <a href="#invite">邀約預覽</a>
+  <a href="#games">小遊戲</a>
+</nav>
     </div>
   </header>
 
@@ -766,6 +784,42 @@
         但我知道姿瑩有選擇障礙，所以就當作小驚喜哈哈哈哈哈。
       </div>
     </section>
+  <section class="section" id="games">
+  <div class="section-head">
+    <div>
+      <div class="eyebrow" style="margin-bottom:10px;">Mini Games</div>
+      <h2>玩一下庫洛米小遊戲</h2>
+    </div>
+    <p>如果挑餐廳挑累了，可以先玩一下。抓到庫洛米，或抽一張今天的可愛小卡。</p>
+  </div>
+
+  <div class="bottom">
+    <div class="box">
+      <h3>① 抓庫洛米</h3>
+      <p class="preview-line">按開始之後，庫洛米會在畫面裡亂跑。抓到她就算成功！</p>
+      <div class="actions">
+        <button class="btn" id="startCatchGameBtn">開始抓庫洛米</button>
+        <button class="btn-soft" id="stopCatchGameBtn">停止遊戲</button>
+      </div>
+      <div class="result-badge" id="catchStatus">狀態：還沒開始抓庫洛米 ♡</div>
+    </div>
+
+    <div class="box">
+      <h3>② 抽一張庫洛米卡</h3>
+      <p class="preview-line">點一下按鈕，抽一張今天的小小訊息。</p>
+      <div class="actions">
+        <button class="btn-line" id="drawCardBtn">抽卡</button>
+      </div>
+      <div class="result-badge" id="cardResult">抽卡結果：等妳來抽 ♡</div>
+    </div>
+  </div>
+</section>
+
+<img
+  id="gameKuromi"
+  src="https://stickershop.line-scdn.net/stickershop/v1/product/18811/LINEStorePC/main.png?v=1"
+  alt="Game Kuromi"
+>
   </main>
 
   <div class="modal" id="modal">
@@ -976,6 +1030,71 @@
     renderRestaurants();
     renderTimes();
     renderPreview();
+    const startCatchGameBtn = document.getElementById('startCatchGameBtn');
+const stopCatchGameBtn = document.getElementById('stopCatchGameBtn');
+const catchStatus = document.getElementById('catchStatus');
+const drawCardBtn = document.getElementById('drawCardBtn');
+const cardResult = document.getElementById('cardResult');
+const gameKuromi = document.getElementById('gameKuromi');
+
+let catchGameTimer = null;
+let catchCount = 0;
+
+function moveGameKuromi(){
+  const maxX = window.innerWidth - 110;
+  const maxY = window.innerHeight - 120;
+
+  const x = Math.max(10, Math.random() * maxX);
+  const y = Math.max(90, Math.random() * maxY);
+
+  gameKuromi.style.left = `${x}px`;
+  gameKuromi.style.top = `${y}px`;
+}
+
+startCatchGameBtn.addEventListener('click', () => {
+  gameKuromi.style.display = 'block';
+  catchCount = 0;
+  catchStatus.textContent = '狀態：快點抓住亂跑的庫洛米！';
+
+  moveGameKuromi();
+
+  if(catchGameTimer) clearInterval(catchGameTimer);
+  catchGameTimer = setInterval(moveGameKuromi, 1600);
+});
+
+stopCatchGameBtn.addEventListener('click', () => {
+  if(catchGameTimer) clearInterval(catchGameTimer);
+  catchGameTimer = null;
+  gameKuromi.style.display = 'none';
+  catchStatus.textContent = '狀態：遊戲已停止，下次再抓庫洛米 ♡';
+});
+
+gameKuromi.addEventListener('click', () => {
+  catchCount += 1;
+
+  if(catchCount === 1){
+    catchStatus.textContent = '抓到了！庫洛米說：那就一起去吃漂亮飯吧 ♡';
+  }else{
+    catchStatus.textContent = `妳已經抓到庫洛米 ${catchCount} 次了，超厲害 ♡`;
+  }
+
+  moveGameKuromi();
+});
+
+drawCardBtn.addEventListener('click', () => {
+  const cards = [
+    '庫洛米說：今天適合吃漂亮飯 ♡',
+    '抽到約會卡！今天的氣氛會很好 ✦',
+    '幸運餐廳卡：黑莓月光 Bistro',
+    '甜甜卡：今天會有好心情和甜點',
+    '心動卡：育豪今天誠意值 +100',
+    '可愛卡：姿瑩今天會選到喜歡的餐廳',
+    '幸運時間卡：今天選哪個時段都會順利 ♡'
+  ];
+
+  const picked = cards[Math.floor(Math.random() * cards.length)];
+  cardResult.textContent = `抽卡結果：${picked}`;
+});
   </script>
 </body>
 </html>
