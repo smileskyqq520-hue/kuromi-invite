@@ -685,7 +685,21 @@
   width:42px;
   height:42px;
   object-fit:contain;
-  filter: drop-shadow(0 6px 10px rgba(0,0,0,0.3));
+  display:block;
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,.3));
+  animation: kuromiFloat 2s ease-in-out infinite;
+}
+
+@keyframes kuromiFloat{
+  0%{
+    transform: translateY(0) scale(1);
+  }
+  50%{
+    transform: translateY(-4px) scale(1.04);
+  }
+  100%{
+    transform: translateY(0) scale(1);
+  }
 }
   </style>
 </head>
@@ -695,12 +709,12 @@
   <header class="topbar">
     <div class="topbar-inner">
 <div class="brand">
-  <img src="https://stickershop.line-scdn.net/stickershop/v1/product/18811/LINEStorePC/main.png?v=1" class="logo-kuromi">
+  <img src="https://stickershop.line-scdn.net/stickershop/v1/product/18811/LINEStorePC/main.png?v=1" class="logo-kuromi" alt="Kuromi">
   <div class="brand-text">
-          <small>Kuromi Style Invite</small>
-          <div>漂亮飯的小叢林！</div>
-        </div>
-      </div>
+    <small>Kuromi Style Invite</small>
+    <div>漂亮飯的小叢林！</div>
+  </div>
+</div>
       <nav class="nav">
         <a href="#restaurants">餐廳選擇</a>
         <a href="#time">時間選擇</a>
