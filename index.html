@@ -1039,25 +1039,135 @@
   top: 50%;
   transform: translate(-50%, -50%);
   pointer-events: none;
-  font-size: 28px;
+  font-size: 34px;
   z-index: 12;
-  animation: magicHeartBurst 1.15s ease-out forwards;
-  filter: drop-shadow(0 6px 14px rgba(0,0,0,.28));
+  animation: magicHeartBurst 1.2s ease-out forwards;
+  filter: drop-shadow(0 8px 16px rgba(0,0,0,.3));
 }
 
 @keyframes magicHeartBurst{
   0%{
     opacity: 0;
-    transform: translate(-50%, -50%) translate(0, 0) scale(.4);
+    transform: translate(-50%, -50%) translate(0, 0) scale(.25);
   }
-  20%{
+  18%{
     opacity: 1;
-    transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) scale(1);
+    transform: translate(-50%, -50%) translate(calc(var(--tx) * .7), calc(var(--ty) * .7)) scale(1.05);
   }
   100%{
     opacity: 0;
-    transform: translate(-50%, -50%) translate(calc(var(--tx) * 1.45), calc(var(--ty) * 1.45)) scale(1.35);
+    transform: translate(-50%, -50%) translate(calc(var(--tx) * 1.8), calc(var(--ty) * 1.8)) scale(1.5);
   }
+}
+    /* ===== 進站愛心雨 ===== */
+.welcome-heart {
+  position: fixed;
+  top: -30px;
+  font-size: 20px;
+  pointer-events: none;
+  z-index: 4000;
+  animation: welcomeHeartFall linear forwards;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,.18));
+}
+
+@keyframes welcomeHeartFall {
+  0% {
+    transform: translateY(-20px) rotate(0deg) scale(.8);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(110vh) rotate(360deg) scale(1.15);
+    opacity: 0;
+  }
+}
+
+/* ===== 餐廳卡片發光 ===== */
+.card {
+  position: relative;
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    radial-gradient(circle at top, rgba(255,177,234,.20), transparent 45%),
+    radial-gradient(circle at bottom, rgba(200,149,255,.18), transparent 45%);
+  transition: opacity .28s ease;
+}
+
+.card:hover::after {
+  opacity: 1;
+}
+
+.card:hover {
+  box-shadow:
+    0 16px 36px rgba(0,0,0,.28),
+    0 0 22px rgba(200,149,255,.14);
+}
+
+/* ===== 稀有抽卡樣式 ===== */
+.fortune-card.rare .fortune-card-back {
+  background:
+    linear-gradient(135deg, #fff0ff 0%, #ffd6f7 18%, #d9b3ff 45%, #ffe7ff 68%, #b985ff 100%);
+  color: #2b1232;
+  border: 1px solid rgba(255,255,255,.75);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.25) inset,
+    0 0 34px rgba(200,149,255,.35);
+}
+
+.fortune-card.rare.glow::after {
+  background:
+    radial-gradient(circle, rgba(255,230,255,.45) 0%, rgba(200,149,255,.34) 30%, rgba(146,86,255,.20) 55%, transparent 75%);
+}
+
+.rare-badge {
+  position: absolute;
+  top: -10px;
+  right: -8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  color: #381142;
+  background: linear-gradient(135deg, #fff6ff, #ffd2f2, #d7b4ff);
+  box-shadow: 0 10px 24px rgba(0,0,0,.2);
+  z-index: 8;
+  animation: rareBadgePop .4s ease;
+}
+
+@keyframes rareBadgePop {
+  0% {
+    transform: scale(.5) rotate(-10deg);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+/* ===== 酷洛米排行榜 ===== */
+.score-board {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.08);
+  color: #f3e4f7;
+  line-height: 1.8;
+  font-size: 14px;
+}
+.score-board strong {
+  color: #fff7ff;
 }
   </style>
 </head>
@@ -1280,6 +1390,10 @@
         <button class="btn-soft" id="stopCatchGameBtn">停止遊戲</button>
       </div>
       <div class="result-badge" id="catchStatus">狀態：還沒開始抓酷洛米 ♡</div>
+      <div class="score-board">
+  <div><strong>本次分數：</strong><span id="currentCatchScore">0</span></div>
+  <div><strong>最高紀錄：</strong><span id="bestCatchScore">0</span></div>
+    </div>
     </div>
 
     <div class="box">
@@ -1290,6 +1404,7 @@
       </div>
      <div class="card-result-wrap">
   <div class="fortune-card" id="fortuneCard">
+  <div id="rareBadgeWrap"></div>
     <div class="fortune-card-inner">
       <div class="fortune-card-front">
         點一下抽卡 ✦
@@ -1672,42 +1787,6 @@ function createCardMagicHearts() {
   });
 }
 
-drawCardBtn.addEventListener('click', () => {
-  const cards = [
-    '酷洛米說：今天適合吃漂亮飯 ♡',
-    '抽到超級卡！今天跟育豪吃飯運氣會變超級好 ✦',
-    '幸運餐廳卡：今晚吃什麼都會很好吃',
-    '甜甜卡：今天會有好心情和甜點',
-    '大拇哥卡：育豪今天誠意值 +100',
-    '可愛卡：姿瑩今天會遇到開心的事情 幸運值+100',
-    '幸運時間卡：今天選哪個時段都會順利 ♡'
-  ];
-
-  const picked = cards[Math.floor(Math.random() * cards.length)];
-
-  fortuneCard.classList.remove('flipped', 'shake', 'glow');
-
-  void fortuneCard.offsetWidth; // 重新觸發動畫
-
-  fortuneCard.classList.add('shake');
-
-  setTimeout(() => {
-    fortuneCard.classList.remove('shake');
-    fortuneCard.classList.add('glow');
-
-    createCardMagicHearts();
-
-    setTimeout(() => {
-      cardResult.textContent = picked;
-      fortuneCard.classList.add('flipped');
-    }, 220);
-
-    setTimeout(() => {
-      fortuneCard.classList.remove('glow');
-    }, 1000);
-  }, 600);
-});
-
 window.addEventListener('load', () => {
   const savedRestaurant = localStorage.getItem('replyRestaurant');
   const savedTime = localStorage.getItem('replyTime');
@@ -1894,7 +1973,142 @@ dessertItems.forEach(item => {
     heartTimer = null;
   });
 });
-  
+  /* ===== 進站愛心雨 ===== */
+function createWelcomeHeartRain() {
+  const hearts = ["💗", "💜", "💕", "💖", "♥"];
+  const count = 22;
+
+  for (let i = 0; i < count; i++) {
+    const heart = document.createElement("div");
+    heart.className = "welcome-heart";
+    heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+
+    heart.style.left = `${Math.random() * 100}vw`;
+    heart.style.animationDuration = `${3.8 + Math.random() * 2.8}s`;
+    heart.style.animationDelay = `${Math.random() * 1.2}s`;
+    heart.style.fontSize = `${16 + Math.random() * 14}px`;
+
+    document.body.appendChild(heart);
+
+    setTimeout(() => {
+      heart.remove();
+    }, 7000);
+  }
+}
+
+window.addEventListener("load", () => {
+  setTimeout(createWelcomeHeartRain, 300);
+});
+
+/* ===== 抓酷洛米排行榜 ===== */
+const currentCatchScore = document.getElementById("currentCatchScore");
+const bestCatchScore = document.getElementById("bestCatchScore");
+
+let bestScore = Number(localStorage.getItem("kuromiBestScore") || 0);
+if (bestCatchScore) {
+  bestCatchScore.textContent = bestScore;
+}
+if (currentCatchScore) {
+  currentCatchScore.textContent = 0;
+}
+
+function updateCatchScoreBoard() {
+  if (currentCatchScore) currentCatchScore.textContent = catchCount;
+
+  if (catchCount > bestScore) {
+    bestScore = catchCount;
+    localStorage.setItem("kuromiBestScore", bestScore);
+    if (bestCatchScore) bestCatchScore.textContent = bestScore;
+  }
+}
+
+/* 重新綁定在現有遊戲流程裡 */
+
+startCatchGameBtn.addEventListener("click", () => {
+  if (currentCatchScore) currentCatchScore.textContent = 0;
+});
+
+gameKuromi.addEventListener("click", () => {
+  updateCatchScoreBoard();
+});
+
+stopCatchGameBtn.addEventListener("click", () => {
+  updateCatchScoreBoard();
+});
+
+/* ===== 抽卡稀有卡 ===== */
+const rareBadgeWrap = document.getElementById("rareBadgeWrap");
+
+function showRareBadge() {
+  if (!rareBadgeWrap) return;
+  rareBadgeWrap.innerHTML = `<div class="rare-badge">SUPER RARE ✦</div>`;
+}
+
+function clearRareBadge() {
+  if (!rareBadgeWrap) return;
+  rareBadgeWrap.innerHTML = "";
+}
+
+/* ===== 升級抽卡邏輯 ===== */
+drawCardBtn.addEventListener('click', () => {
+  if (isDrawingCard) return;
+  isDrawingCard = true;
+  const normalCards = [
+    '酷洛米說：今天適合吃漂亮飯 ♡',
+    '抽到超級卡！今天跟育豪吃飯運氣會變超級好 ✦',
+    '幸運餐廳卡：今晚吃什麼都會很好吃',
+    '甜甜卡：今天會有好心情和甜點',
+    '大拇哥卡：育豪今天誠意值 +100',
+    '可愛卡：姿瑩今天會遇到開心的事情 幸運值+100',
+    '幸運時間卡：今天選哪個時段都會順利 ♡'
+  ];
+
+  const rareCards = [
+    '紫金稀有卡：今天是被偏愛的一天 ✨',
+    'Kuromi 祕密卡：今晚的快樂會比想像中更多 💜',
+    '超稀有甜點卡：今天的甜點運與心動運同步上升 ✦',
+    '命定小幸運卡：妳選的時間與餐廳都會剛剛好 ♡'
+  ];
+
+  const isRare = Math.random() < 0.18;
+  const picked = isRare
+    ? rareCards[Math.floor(Math.random() * rareCards.length)]
+    : normalCards[Math.floor(Math.random() * normalCards.length)];
+
+  fortuneCard.classList.remove('flipped', 'shake', 'glow', 'rare');
+  clearRareBadge();
+
+  void fortuneCard.offsetWidth;
+
+  fortuneCard.classList.add('shake');
+
+  setTimeout(() => {
+    fortuneCard.classList.remove('shake');
+    fortuneCard.classList.add('glow');
+
+    if (isRare) {
+      fortuneCard.classList.add('rare');
+      showRareBadge();
+    }
+
+    createCardMagicHearts();
+
+    setTimeout(() => {
+      cardResult.textContent = picked;
+      fortuneCard.classList.add('flipped');
+    }, 260);
+
+   setTimeout(() => {
+      fortuneCard.classList.remove('glow');
+    }, 1000);
+
+    setTimeout(() => {
+      isDrawingCard = false;
+    }, 1700);
+  }, 600);
+});
+    let isDrawingCard = false;
+    
   </script>
 
 </body>
