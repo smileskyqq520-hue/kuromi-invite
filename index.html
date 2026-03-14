@@ -1500,28 +1500,10 @@ if (dessertTrack) {
     dessertTrack.style.transform = `translateX(-${dessertIndex * cardWidth}px)`;
   }
 
-  setInterval(moveDessertSlider, 1000);
+  setInterval(moveDessertSlider, 3000);
 }
-    const viewer = document.getElementById("imageViewer");
-const viewerImg = document.getElementById("viewerImg");
 
-document.addEventListener("click", function(e){
-
-  if(e.target.tagName === "IMG"){
-    const src = e.target.src;
-
-    if(src){
-      viewerImg.src = src;
-      viewer.style.display = "flex";
-    }
-  }
-
-});
-
-viewer.addEventListener("click", () => {
-  viewer.style.display = "none";
-});
-    const viewer = document.getElementById("imageViewer");
+const viewer = document.getElementById("imageViewer");
 const viewerImg = document.getElementById("viewerImg");
 const viewerClose = document.getElementById("viewerClose");
 const viewerPrev = document.getElementById("viewerPrev");
@@ -1532,9 +1514,9 @@ let viewerIndex = 0;
 let viewerScale = 1;
 
 function getAllZoomableImages(){
-  return Array.from(document.querySelectorAll(
-    ".cover, .dialog-hero, .gallery img, .kuromi-pic"
-  ));
+ return Array.from(document.querySelectorAll(
+  ".cover, .dialog-hero, .gallery img, .kuromi-pic, .dessert-track img"
+));
 }
 
 function openImageViewer(images, index){
@@ -1632,8 +1614,6 @@ viewer.addEventListener("wheel", (e) => {
   viewerImg.style.transform = `scale(${viewerScale})`;
 }, { passive: false });
   </script>
-  <div id="imageViewer" class="image-viewer">
-  <img id="viewerImg" src="">
-</div>
+
 </body>
 </html>
