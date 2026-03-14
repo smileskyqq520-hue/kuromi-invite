@@ -870,6 +870,9 @@
       <div class="actions">
         <button class="btn" id="submitChoiceBtn">送出我的選擇</button>
       </div>
+      <div class="result-badge" id="replyStatus">
+  狀態：還沒有送出選擇 ♡
+　　　</div>
     </div>
 
     <div class="box">
@@ -1040,12 +1043,12 @@ const submitChoiceBtn = document.getElementById('submitChoiceBtn');
 const finalRestaurant = document.getElementById('finalRestaurant');
 const finalTime = document.getElementById('finalTime');
 const finalReply = document.getElementById('finalReply');
-
+const replyStatus = document.getElementById('replyStatus');
 submitChoiceBtn.addEventListener('click', () => {
   finalRestaurant.textContent = selectedRestaurant ? selectedRestaurant.name : '尚未選擇';
   finalTime.textContent = selectedTime ? selectedTime.main : '尚未選擇';
   finalReply.textContent = replyMessage.value.trim() || '沒有特別留言 ♡';
-
+ replyStatus.textContent = "狀態：姿瑩已經送出選擇了 ✦";
   alert('已經幫妳整理好這次的選擇了 ♡');
 });
     function renderRestaurants() {
