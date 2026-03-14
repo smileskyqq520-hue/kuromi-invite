@@ -281,19 +281,7 @@
       font-weight: 800;
     }
 
-    .bubble {
-      position: absolute;
-      right: 20px;
-      bottom: 18px;
-      max-width: 190px;
-      padding: 12px 14px;
-      border-radius: 18px 18px 18px 6px;
-      background: rgba(255,255,255,.1);
-      border: 1px solid rgba(255,255,255,.08);
-      color: #fff2fb;
-      line-height: 1.7;
-      font-size: 14px;
-    }
+
 
     .section {
       margin-top: 28px;
@@ -720,6 +708,29 @@
   border:1px solid rgba(255,255,255,.35);
   transform:rotateY(180deg);
 }
+    .heart-pop{
+  position: fixed;
+  font-size: 24px;
+  pointer-events: none;
+  z-index: 1000;
+  animation: heartPop 900ms ease-out forwards;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,.18));
+}
+
+@keyframes heartPop{
+  0%{
+    opacity: 1;
+    transform: translateY(0) scale(0.8);
+  }
+  30%{
+    opacity: 1;
+    transform: translateY(-18px) scale(1.15);
+  }
+  100%{
+    opacity: 0;
+    transform: translateY(-60px) scale(1.4);
+  }
+}
   </style>
 </head>
 <body>
@@ -841,20 +852,20 @@
   <div class="section-head">
     <div>
       <div class="eyebrow" style="margin-bottom:10px;">Mini Games</div>
-      <h2>玩一下庫洛米小遊戲</h2>
+      <h2>玩一下酷洛米小遊戲</h2>
     </div>
-    <p>如果挑餐廳挑累了，可以先玩一下。抓到庫洛米，或抽一張今天的可愛小卡。</p>
+    <p>如果挑餐廳挑累了，可以先玩一下。抓到酷洛米，或抽一張今天的可愛小卡。</p>
   </div>
 
   <div class="bottom">
     <div class="box">
-      <h3>① 抓庫洛米</h3>
-      <p class="preview-line">按開始之後，庫洛米會在畫面裡亂跑。抓到她就算成功！</p>
+      <h3>① 抓酷洛米</h3>
+      <p class="preview-line">按開始之後，酷洛米會在畫面裡亂跑。抓到她就算成功！</p>
       <div class="actions">
-        <button class="btn" id="startCatchGameBtn">開始抓庫洛米</button>
+        <button class="btn" id="startCatchGameBtn">開始抓酷洛米</button>
         <button class="btn-soft" id="stopCatchGameBtn">停止遊戲</button>
       </div>
-      <div class="result-badge" id="catchStatus">狀態：還沒開始抓庫洛米 ♡</div>
+      <div class="result-badge" id="catchStatus">狀態：還沒開始抓酷洛米 ♡</div>
     </div>
 
     <div class="box">
@@ -1100,11 +1111,39 @@ const catchStatus = document.getElementById('catchStatus');
 const drawCardBtn = document.getElementById('drawCardBtn');
 const cardResult = document.getElementById('cardResult');
 const gameKuromi = document.getElementById('gameKuromi');
-
+const kuromiImages = [
+  "https://stickershop.line-scdn.net/stickershop/v1/sticker/12981593/android/sticker.png",
+  "https://stickershop.line-scdn.net/stickershop/v1/sticker/353004271/android/sticker.png",
+  "https://stickershop.line-scdn.net/stickershop/v1/sticker/12981598/android/sticker.png",
+  "https://stickershop.line-scdn.net/stickershop/v1/sticker/13274556/IOS/sticker.png",
+  "https://stickershop.line-scdn.net/stickershop/v1/product/15526/LINEStorePC/main.png?v=1"
+];
+    
 let catchGameTimer = null;
 let catchCount = 0;
+function createHeartBurst(x, y){
+  const hearts = ["💗", "💖", "💘", "💕", "💜"];
 
+  for(let i = 0; i < 8; i++){
+    const heart = document.createElement("div");
+    heart.className = "heart-pop";
+    heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+
+    const offsetX = (Math.random() - 0.5) * 80;
+    const offsetY = (Math.random() - 0.5) * 40;
+
+    heart.style.left = `${x + offsetX}px`;
+    heart.style.top = `${y + offsetY}px`;
+
+    document.body.appendChild(heart);
+
+    setTimeout(() => {
+      heart.remove();
+    }, 900);
+  }
+}
 function moveGameKuromi(){
+
   const maxX = window.innerWidth - 110;
   const maxY = window.innerHeight - 120;
 
@@ -1113,12 +1152,16 @@ function moveGameKuromi(){
 
   gameKuromi.style.left = `${x}px`;
   gameKuromi.style.top = `${y}px`;
+
+  const randomImage = kuromiImages[Math.floor(Math.random() * kuromiImages.length)];
+  gameKuromi.src = randomImage;
+
 }
 
 startCatchGameBtn.addEventListener('click', () => {
   gameKuromi.style.display = 'block';
   catchCount = 0;
-  catchStatus.textContent = '狀態：快點抓住亂跑的庫洛米！';
+  catchStatus.textContent = '狀態：快點抓住亂跑的酷洛米！';
 
   moveGameKuromi();
 
@@ -1130,16 +1173,29 @@ stopCatchGameBtn.addEventListener('click', () => {
   if(catchGameTimer) clearInterval(catchGameTimer);
   catchGameTimer = null;
   gameKuromi.style.display = 'none';
-  catchStatus.textContent = '狀態：遊戲已停止，下次再抓庫洛米 ♡';
+  catchStatus.textContent = '狀態：遊戲已停止，下次再抓酷洛米 ♡';
 });
 
-gameKuromi.addEventListener('click', () => {
+gameKuromi.addEventListener('click', (e) => {
+
   catchCount += 1;
 
+  createHeartBurst(e.clientX, e.clientY);
+
   if(catchCount === 1){
-    catchStatus.textContent = '抓到了！酷洛米說：那就一起去吃漂亮飯吧！';
-  }else{
-    catchStatus.textContent = `妳已經抓到酷洛米 ${catchCount} 次了，超厲害 ♡`;
+    catchStatus.textContent = "抓到第一隻酷洛米！♡";
+  }
+  else if(catchCount === 3){
+    catchStatus.textContent = "抓到 3 隻酷洛米！姿瑩反應很快！";
+  }
+  else if(catchCount === 5){
+    catchStatus.textContent = "抓到 5 隻酷洛米！今天很適合漂亮飯 ✦";
+  }
+  else if(catchCount === 10){
+    catchStatus.textContent = "抓到 10 隻酷洛米！可以去吃大餐了！";
+  }
+  else{
+    catchStatus.textContent = `目前抓到 ${catchCount} 隻酷洛米 ♡`;
   }
 
   moveGameKuromi();
@@ -1149,8 +1205,8 @@ const fortuneCard = document.getElementById('fortuneCard');
 
 drawCardBtn.addEventListener('click', () => {
   const cards = [
-    '庫洛米說：今天適合吃漂亮飯 ♡',
-    '抽到約會卡！今天的氣氛會很好 ✦',
+    '酷洛米說：今天適合吃漂亮飯 ♡',
+    '抽到超級卡！今天跟育豪吃飯運氣會變超級好 ✦',
     '幸運餐廳卡：黑莓月光 Bistro',
     '甜甜卡：今天會有好心情和甜點',
     '心動卡：育豪今天誠意值 +100',
