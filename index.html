@@ -667,6 +667,59 @@
 #gameKuromi:hover{
   transform: scale(1.06);
 }
+.card-result-wrap{
+  margin-top:16px;
+  display:flex;
+  justify-content:center;
+}
+
+.fortune-card{
+  width:100%;
+  max-width:320px;
+  height:180px;
+  perspective:1000px;
+}
+
+.fortune-card-inner{
+  position:relative;
+  width:100%;
+  height:100%;
+  transition:transform .7s ease;
+  transform-style:preserve-3d;
+}
+
+.fortune-card.flipped .fortune-card-inner{
+  transform:rotateY(180deg);
+}
+
+.fortune-card-front,
+.fortune-card-back{
+  position:absolute;
+  inset:0;
+  border-radius:24px;
+  backface-visibility:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:24px;
+  line-height:1.8;
+  font-weight:800;
+  box-shadow:0 16px 30px rgba(0,0,0,.25);
+}
+
+.fortune-card-front{
+  background:linear-gradient(135deg,#4a245d,#8b49c9);
+  color:#fff7ff;
+  border:1px solid rgba(255,255,255,.12);
+}
+
+.fortune-card-back{
+  background:linear-gradient(135deg,#ffb1ea,#c895ff);
+  color:#2b1232;
+  border:1px solid rgba(255,255,255,.35);
+  transform:rotateY(180deg);
+}
   </style>
 </head>
 <body>
@@ -707,7 +760,7 @@
 
 <div class="hero-card">
   <div class="visual">
-    <div class="floating-badge">庫洛米主題很可愛吧 ✦</div>
+    <div class="floating-badge">酷洛米小叢林很可愛吧 ✦</div>
     <div class="moon"></div>
 
     <img
@@ -730,7 +783,7 @@
           <div class="eyebrow" style="margin-bottom:10px;">Restaurant Pick</div>
           <h2>✦選擇喜歡的餐廳✦</h2>
         </div>
-        <p>我把每一間都介紹給妳！。點進去可以看更多圖片和介紹，雖然都是圖片XD。</p>
+        <p>我把塞選完的都介紹給妳！。點進去可以看更多圖片和介紹，雖然都是圖片XD。</p>
       </div>
       <div class="card-grid" id="restaurantGrid"></div>
     </section>
@@ -805,19 +858,30 @@
     </div>
 
     <div class="box">
-      <h3>② 抽一張庫洛米卡</h3>
+      <h3>② 抽一張酷洛米卡</h3>
       <p class="preview-line">點一下按鈕，抽一張今天的小小訊息。</p>
       <div class="actions">
         <button class="btn-line" id="drawCardBtn">抽卡</button>
       </div>
-      <div class="result-badge" id="cardResult">抽卡結果：等妳來抽 ♡</div>
+     <div class="card-result-wrap">
+  <div class="fortune-card" id="fortuneCard">
+    <div class="fortune-card-inner">
+      <div class="fortune-card-front">
+        點一下抽卡 ✦
+      </div>
+      <div class="fortune-card-back" id="cardResult">
+        快來看看今天的運氣吧 ♡
+      </div>
+    </div>
+  </div>
+</div>
     </div>
   </div>
 </section>
 
 <img
   id="gameKuromi"
-  src="https://stickershop.line-scdn.net/stickershop/v1/product/18811/LINEStorePC/main.png?v=1"
+  src="https://stickershop.line-scdn.net/stickershop/v1/sticker/12981593/android/sticker.png"
   alt="Game Kuromi"
 >
   </main>
@@ -1003,11 +1067,11 @@
     message.addEventListener('input', renderPreview);
 
     acceptMockBtn.addEventListener('click', () => {
-      acceptStatus.textContent = '狀態：如果她按下這種按鈕，就代表她願意一起去吃漂亮飯了 ♡';
+      acceptStatus.textContent = '狀態：準備好一起去吃漂亮飯了 ！';
     });
 
     copyBtn.addEventListener('click', async () => {
-      const text = `庫洛米風漂亮飯邀約\n\n餐廳：${selectedRestaurant.name}（${selectedRestaurant.tag}）\n時間：${selectedTime.main}\n\n想對妳說：${message.value.trim()}`;
+      const text = `酷洛米的漂亮飯邀約\n\n餐廳：${selectedRestaurant.name}（${selectedRestaurant.tag}）\n時間：${selectedTime.main}\n\n想對妳說：${message.value.trim()}`;
       try {
         await navigator.clipboard.writeText(text);
         copyBtn.textContent = '已複製完成';
@@ -1073,13 +1137,15 @@ gameKuromi.addEventListener('click', () => {
   catchCount += 1;
 
   if(catchCount === 1){
-    catchStatus.textContent = '抓到了！庫洛米說：那就一起去吃漂亮飯吧 ♡';
+    catchStatus.textContent = '抓到了！酷洛米說：那就一起去吃漂亮飯吧！';
   }else{
-    catchStatus.textContent = `妳已經抓到庫洛米 ${catchCount} 次了，超厲害 ♡`;
+    catchStatus.textContent = `妳已經抓到酷洛米 ${catchCount} 次了，超厲害 ♡`;
   }
 
   moveGameKuromi();
 });
+
+const fortuneCard = document.getElementById('fortuneCard');
 
 drawCardBtn.addEventListener('click', () => {
   const cards = [
@@ -1088,13 +1154,20 @@ drawCardBtn.addEventListener('click', () => {
     '幸運餐廳卡：黑莓月光 Bistro',
     '甜甜卡：今天會有好心情和甜點',
     '心動卡：育豪今天誠意值 +100',
-    '可愛卡：姿瑩今天會選到喜歡的餐廳',
+    '可愛卡：姿瑩今天會遇到開心的事情 幸運值+100',
     '幸運時間卡：今天選哪個時段都會順利 ♡'
   ];
 
   const picked = cards[Math.floor(Math.random() * cards.length)];
-  cardResult.textContent = `抽卡結果：${picked}`;
+
+  fortuneCard.classList.remove('flipped');
+
+  setTimeout(() => {
+    cardResult.textContent = picked;
+    fortuneCard.classList.add('flipped');
+  }, 150);
 });
+
   </script>
 </body>
 </html>
