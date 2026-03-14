@@ -731,6 +731,12 @@
     transform: translateY(-60px) scale(1.4);
   }
 }
+    #finalReply,
+  #finalRestaurant,
+  #finalTime{
+    color:#fff7ff;
+    font-weight:700;
+  }
   </style>
 </head>
 <body>
@@ -848,6 +854,33 @@
         但我知道姿瑩有選擇障礙，所以就當作小驚喜哈哈哈哈哈。
       </div>
     </section>
+    <section class="section" id="reply">
+  <div class="section-head">
+    <div>
+      <div class="eyebrow" style="margin-bottom:10px;">Reply</div>
+      <h2>✦姿瑩的選擇✦</h2>
+    </div>
+    <p>選好餐廳和時間後，也可以留一句話給育豪。</p>
+  </div>
+
+  <div class="bottom">
+    <div class="box">
+      <h3>留一句話</h3>
+      <textarea id="replyMessage" placeholder="例如：我想選週六中午，感覺比較輕鬆！"></textarea>
+      <div class="actions">
+        <button class="btn" id="submitChoiceBtn">送出我的選擇</button>
+      </div>
+    </div>
+
+    <div class="box">
+      <h3>目前送出結果</h3>
+      <div class="preview-line"><strong>選擇的餐廳：</strong><span id="finalRestaurant">尚未選擇</span></div>
+      <div class="preview-line"><strong>選擇的時間：</strong><span id="finalTime">尚未選擇</span></div>
+      <div class="preview-line"><strong>想說的話：</strong></div>
+      <div class="preview-line" id="finalReply">還沒有留言 ♡</div>
+    </div>
+  </div>
+</section>
   <section class="section" id="games">
   <div class="section-head">
     <div>
@@ -1002,7 +1035,19 @@
     const closeSecondaryBtn = document.getElementById('closeSecondaryBtn');
 
     const defaultMessage = message.value;
+const replyMessage = document.getElementById('replyMessage');
+const submitChoiceBtn = document.getElementById('submitChoiceBtn');
+const finalRestaurant = document.getElementById('finalRestaurant');
+const finalTime = document.getElementById('finalTime');
+const finalReply = document.getElementById('finalReply');
 
+submitChoiceBtn.addEventListener('click', () => {
+  finalRestaurant.textContent = selectedRestaurant ? selectedRestaurant.name : '尚未選擇';
+  finalTime.textContent = selectedTime ? selectedTime.main : '尚未選擇';
+  finalReply.textContent = replyMessage.value.trim() || '沒有特別留言 ♡';
+
+  alert('已經幫妳整理好這次的選擇了 ♡');
+});
     function renderRestaurants() {
       restaurantGrid.innerHTML = restaurants.map(r => `
         <article class="card ${selectedRestaurant.id === r.id ? 'selected' : ''}">
