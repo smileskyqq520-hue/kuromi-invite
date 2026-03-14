@@ -737,6 +737,64 @@
     color:#fff7ff;
     font-weight:700;
   }
+    .dessert-slider{
+  overflow: hidden;
+  width: 100%;
+  border-radius: 24px;
+  position: relative;
+}
+
+.dessert-track{
+  display: flex;
+  gap: 16px;
+  transition: transform 0.7s ease;
+}
+
+.dessert-track img{
+  width: calc((100% - 32px) / 3);
+  height: 220px;
+  object-fit: cover;
+  border-radius: 20px;
+  flex: 0 0 calc((100% - 32px) / 3);
+  box-shadow: 0 12px 24px rgba(0,0,0,.22);
+}
+
+@media (max-width: 980px){
+  .dessert-track img{
+    width: 100%;
+    flex: 0 0 100%;
+    height: 220px;
+  }
+}
+    .image-viewer{
+  position: fixed;
+  inset:0;
+  background: rgba(0,0,0,.85);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:2000;
+  cursor: zoom-out;
+}
+
+.image-viewer img{
+  max-width:90%;
+  max-height:90%;
+  border-radius:16px;
+  box-shadow:0 20px 60px rgba(0,0,0,.6);
+  animation: imgZoom .25s ease;
+}
+
+@keyframes imgZoom{
+  from{
+    transform:scale(.8);
+    opacity:0;
+  }
+  to{
+    transform:scale(1);
+    opacity:1;
+  }
+}
   </style>
 </head>
 <body>
@@ -815,7 +873,26 @@
       </div>
       <div class="time-grid" id="timeGrid"></div>
     </section>
+<section class="section" id="dessert">
+  <div class="section-head">
+    <div>
+      <div class="eyebrow" style="margin-bottom:10px;">Dessert Zone</div>
+      <h2>✦姿瑩的甜點專區✦</h2>
+    </div>
+    <p>先幫妳準備一區甜點小宇宙，看看有沒有一眼就喜歡的 ♡</p>
+  </div>
 
+  <div class="dessert-slider">
+    <div class="dessert-track" id="dessertTrack">
+      <img src="https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=900&q=80" alt="dessert 1">
+      <img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=900&q=80" alt="dessert 2">
+      <img src="https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?auto=format&fit=crop&w=900&q=80" alt="dessert 3">
+      <img src="https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=900&q=80" alt="dessert 4">
+      <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?auto=format&fit=crop&w=900&q=80" alt="dessert 5">
+      <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=80" alt="dessert 6">
+    </div>
+  </div>
+</section>
     <section class="section" id="invite">
       <div class="section-head">
         <div>
@@ -1295,6 +1372,52 @@ window.addEventListener('load', () => {
   }
   if (savedStatus) replyStatus.textContent = savedStatus;
 });
+    const dessertTrack = document.getElementById('dessertTrack');
+
+if (dessertTrack) {
+  const dessertImages = Array.from(dessertTrack.children);
+  let dessertIndex = 0;
+
+  function moveDessertSlider() {
+    const cardWidth = dessertImages[0].offsetWidth + 16; // 圖片寬 + gap
+    dessertIndex++;
+
+    // 桌機一次顯示3張，所以最後停在 length - 3
+    const maxIndex = window.innerWidth <= 980
+      ? dessertImages.length - 1
+      : dessertImages.length - 3;
+
+    if (dessertIndex > maxIndex) {
+      dessertIndex = 0;
+    }
+
+    dessertTrack.style.transform = `translateX(-${dessertIndex * cardWidth}px)`;
+  }
+
+  setInterval(moveDessertSlider, 1000);
+}
+    const viewer = document.getElementById("imageViewer");
+const viewerImg = document.getElementById("viewerImg");
+
+document.addEventListener("click", function(e){
+
+  if(e.target.tagName === "IMG"){
+    const src = e.target.src;
+
+    if(src){
+      viewerImg.src = src;
+      viewer.style.display = "flex";
+    }
+  }
+
+});
+
+viewer.addEventListener("click", () => {
+  viewer.style.display = "none";
+});
   </script>
+  <div id="imageViewer" class="image-viewer">
+  <img id="viewerImg" src="">
+</div>
 </body>
 </html>
