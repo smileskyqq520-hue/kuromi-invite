@@ -78,29 +78,7 @@
       font-weight: 900;
       letter-spacing: .04em;
     }
-    .logo {
-      width: 42px;
-      height: 42px;
-      border-radius: 50% 50% 46% 46%;
-      background: linear-gradient(180deg, var(--pink), var(--purple));
-      position: relative;
-      box-shadow: 0 12px 24px rgba(255,103,196,.28);
-      flex: 0 0 auto;
-    }
-    .logo::before,
-    .logo::after {
-      content: "";
-      position: absolute;
-      top: -8px;
-      width: 15px;
-      height: 16px;
-      background: #180b1d;
-      border: 3px solid var(--pink-2);
-      border-bottom: none;
-      border-radius: 14px 14px 0 0;
-    }
-    .logo::before { left: 4px; transform: rotate(-18deg); }
-    .logo::after { right: 4px; transform: rotate(18deg); }
+
     .brand-text small {
       display: block;
       color: var(--pink-2);
@@ -731,70 +709,9 @@
     transform: translateY(-60px) scale(1.4);
   }
 }
-    #finalReply,
-  #finalRestaurant,
-  #finalTime{
-    color:#fff7ff;
-    font-weight:700;
-  }
-    .dessert-slider{
-  overflow: hidden;
-  width: 100%;
-  border-radius: 24px;
-  position: relative;
-}
+    
 
-.dessert-track{
-  display: flex;
-  gap: 16px;
-  transition: transform 0.7s ease;
-}
 
-.dessert-track img{
-  width: calc((100% - 32px) / 3);
-  height: 220px;
-  object-fit: cover;
-  border-radius: 20px;
-  flex: 0 0 calc((100% - 32px) / 3);
-  box-shadow: 0 12px 24px rgba(0,0,0,.22);
-}
-
-@media (max-width: 980px){
-  .dessert-track img{
-    width: 100%;
-    flex: 0 0 100%;
-    height: 220px;
-  }
-}
-    .image-viewer{
-  position: fixed;
-  inset:0;
-  background: rgba(0,0,0,.85);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:2000;
-  cursor: zoom-out;
-}
-
-.image-viewer img{
-  max-width:90%;
-  max-height:90%;
-  border-radius:16px;
-  box-shadow:0 20px 60px rgba(0,0,0,.6);
-  animation: imgZoom .25s ease;
-}
-
-@keyframes imgZoom{
-  from{
-    transform:scale(.8);
-    opacity:0;
-  }
-  to{
-    transform:scale(1);
-    opacity:1;
-  }
-}
     .image-viewer{
   position: fixed;
   inset: 0;
@@ -1169,6 +1086,64 @@
 .score-board strong {
   color: #fff7ff;
 }
+    /* ===== 酷洛米魔法選時間 ===== */
+.time-card.magic-pick {
+  animation: timeMagicPick 1s ease;
+  box-shadow:
+    0 0 0 2px rgba(200,149,255,.55),
+    0 0 26px rgba(146,86,255,.35),
+    0 0 42px rgba(255,103,196,.18);
+}
+
+@keyframes timeMagicPick {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(0,0,0,0);
+  }
+  25% {
+    transform: scale(1.03);
+    box-shadow:
+      0 0 0 2px rgba(255,177,234,.5),
+      0 0 18px rgba(255,103,196,.25);
+  }
+  60% {
+    transform: scale(1.05);
+    box-shadow:
+      0 0 0 2px rgba(200,149,255,.65),
+      0 0 30px rgba(146,86,255,.35),
+      0 0 48px rgba(255,103,196,.22);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow:
+      0 0 0 2px rgba(200,149,255,.15),
+      0 0 0 rgba(0,0,0,0);
+  }
+}
+
+.time-magic-heart {
+  position: fixed;
+  pointer-events: none;
+  z-index: 5000;
+  font-size: 26px;
+  animation: timeHeartBurst 1s ease-out forwards;
+  filter: drop-shadow(0 6px 12px rgba(0,0,0,.2));
+}
+
+@keyframes timeHeartBurst {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(.3);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(calc(var(--tx) * 1.5), calc(var(--ty) * 1.5)) scale(1.35);
+  }
+}
   </style>
 </head>
 <body>
@@ -1294,15 +1269,20 @@
     
 </section>
     <section class="section" id="time">
-      <div class="section-head">
-        <div>
-          <div class="eyebrow" style="margin-bottom:10px;">Time Pick</div>
-          <h2>✦選一個快樂的時間✦</h2>
-        </div>
-        <p>我先幫妳整理幾個比較自然又不會太趕的時段，妳只要選妳最舒服的那個就好。</p>
-      </div>
-      <div class="time-grid" id="timeGrid"></div>
-    </section>
+  <div class="section-head">
+    <div>
+      <div class="eyebrow" style="margin-bottom:10px;">Time Pick</div>
+      <h2>✦選一個快樂的時間✦</h2>
+    </div>
+    <p>我先幫妳整理幾個比較自然又不會太趕的時段，妳只要選妳最舒服的那個就好。</p>
+  </div>
+
+  <div class="time-grid" id="timeGrid"></div>
+
+  <div class="actions" style="margin-top:18px;">
+    <button class="btn-line" id="randomTimeBtn">讓酷洛米幫妳選時間 ✦</button>
+  </div>
+</section>
 
     <section class="section" id="invite">
       <div class="section-head">
@@ -1342,36 +1322,7 @@
         但我知道姿瑩有選擇障礙，所以就當作小驚喜哈哈哈哈哈。
       </div>
     </section>
-    <section class="section" id="reply">
-  <div class="section-head">
-    <div>
-      <div class="eyebrow" style="margin-bottom:10px;">Reply</div>
-      <h2>✦姿瑩的選擇✦</h2>
-    </div>
-    <p>選好餐廳和時間後，也可以留一句話給育豪。</p>
-  </div>
 
-  <div class="bottom">
-    <div class="box">
-      <h3>留一句話</h3>
-      <textarea id="replyMessage" placeholder="例如：我想選週六中午，感覺比較輕鬆！"></textarea>
-      <div class="actions">
-        <button class="btn" id="submitChoiceBtn">送出我的選擇</button>
-      </div>
-      <div class="result-badge" id="replyStatus">
-  狀態：還沒有送出選擇 ♡
-　　　</div>
-    </div>
-
-    <div class="box">
-      <h3>目前送出結果</h3>
-      <div class="preview-line"><strong>選擇的餐廳：</strong><span id="finalRestaurant">尚未選擇</span></div>
-      <div class="preview-line"><strong>選擇的時間：</strong><span id="finalTime">尚未選擇</span></div>
-      <div class="preview-line"><strong>想說的話：</strong></div>
-      <div class="preview-line" id="finalReply">還沒有留言 ♡</div>
-    </div>
-  </div>
-</section>
   <section class="section" id="games">
   <div class="section-head">
     <div>
@@ -1407,7 +1358,7 @@
   <div id="rareBadgeWrap"></div>
     <div class="fortune-card-inner">
       <div class="fortune-card-front">
-        點一下抽卡 ✦
+        ✦ KUROMI ✦
       </div>
       <div class="fortune-card-back" id="cardResult">
         快來看看今天的運氣吧 ♡
@@ -1547,18 +1498,22 @@
 }
     ];
 
-    const times = [
-      { id: 't1', label: 'Option A', main: '週五晚上 7:00', note: '下班後比較不趕，整體感覺剛剛好。' },
-      { id: 't2', label: 'Option B', main: '週六中午 12:30', note: '白天比較自然輕鬆，氣氛也更自在。' },
-      { id: 't3', label: 'Option C', main: '週日晚上 6:30', note: '不會太晚回家，安排起來比較順。' }
-    ];
+const times = [
+  { id: 't1', label: 'Kuromi A', main: '週五晚上 7:00', note: '下班後比較不趕，整體感覺剛剛好。' },
+  { id: 't2', label: 'Kuromi B', main: '週六中午 12:30', note: '白天比較自然輕鬆，氣氛也更自在。' },
+  { id: 't3', label: 'Kuromi C', main: '週日晚上 6:30', note: '不會太晚回家，安排起來比較順。' },
 
+  { id: 't4', label: 'Kuromi D', main: '週六下午 4:30', note: '下午吃個漂亮飯，晚上還能散步聊天。' },
+  { id: 't5', label: 'Kuromi E', main: '週五晚上 8:00', note: '比較悠閒的晚餐時間，不會太趕。' },
+  { id: 't6', label: 'Kuromi F', main: '週日下午 5:30', note: '傍晚吃飯氣氛很舒服，回家也不會太晚。' }
+];
     let selectedRestaurant = restaurants[0];
     let selectedTime = times[0];
     let modalRestaurant = restaurants[0];
 
     const restaurantGrid = document.getElementById('restaurantGrid');
     const timeGrid = document.getElementById('timeGrid');
+    const randomTimeBtn = document.getElementById('randomTimeBtn');
     const pickedRestaurant = document.getElementById('pickedRestaurant');
     const pickedTag = document.getElementById('pickedTag');
     const pickedTime = document.getElementById('pickedTime');
@@ -1581,29 +1536,7 @@
     const closeSecondaryBtn = document.getElementById('closeSecondaryBtn');
 
     const defaultMessage = message.value;
-const replyMessage = document.getElementById('replyMessage');
-const submitChoiceBtn = document.getElementById('submitChoiceBtn');
-const finalRestaurant = document.getElementById('finalRestaurant');
-const finalTime = document.getElementById('finalTime');
-const finalReply = document.getElementById('finalReply');
-const replyStatus = document.getElementById('replyStatus');
-submitChoiceBtn.addEventListener('click', () => {
-  const savedRestaurant = selectedRestaurant ? selectedRestaurant.name : '尚未選擇';
-  const savedTime = selectedTime ? selectedTime.main : '尚未選擇';
-  const savedReply = replyMessage.value.trim() || '沒有特別留言 ♡';
 
-  finalRestaurant.textContent = savedRestaurant;
-  finalTime.textContent = savedTime;
-  finalReply.textContent = savedReply;
-  replyStatus.textContent = "狀態：姿瑩已經送出選擇了 ✦";
-
-  localStorage.setItem('replyRestaurant', savedRestaurant);
-  localStorage.setItem('replyTime', savedTime);
-  localStorage.setItem('replyMessage', savedReply);
-  localStorage.setItem('replyStatus', '狀態：姿瑩已經送出選擇了 ✦');
-
-  alert('已經幫妳整理好這次的選擇了 ♡');
-});
     function renderRestaurants() {
       restaurantGrid.innerHTML = restaurants.map(r => `
         <article class="card ${selectedRestaurant.id === r.id ? 'selected' : ''}">
@@ -1832,20 +1765,6 @@ function createCardMagicHearts() {
   });
 }
 
-window.addEventListener('load', () => {
-  const savedRestaurant = localStorage.getItem('replyRestaurant');
-  const savedTime = localStorage.getItem('replyTime');
-  const savedReply = localStorage.getItem('replyMessage');
-  const savedStatus = localStorage.getItem('replyStatus');
-
-  if (savedRestaurant) finalRestaurant.textContent = savedRestaurant;
-  if (savedTime) finalTime.textContent = savedTime;
-  if (savedReply) {
-    finalReply.textContent = savedReply;
-    replyMessage.value = savedReply;
-  }
-  if (savedStatus) replyStatus.textContent = savedStatus;
-});
     const dessertTrack = document.getElementById('dessertTrack');
 
 if (dessertTrack) {
@@ -2153,7 +2072,65 @@ drawCardBtn.addEventListener('click', () => {
   }, 600);
 });
     let isDrawingCard = false;
-    
+   randomTimeBtn.addEventListener('click', () => {
+  playRandomTimeMagic();
+});
+  function createTimeMagicHearts(x, y) {
+  const hearts = ["💜", "💗", "💕", "💖", "♥"];
+  const positions = [
+    { x: -70, y: -60 },
+    { x: -35, y: -85 },
+    { x: 0, y: -95 },
+    { x: 35, y: -85 },
+    { x: 70, y: -60 },
+    { x: -55, y: -20 },
+    { x: 55, y: -20 }
+  ];
+
+  positions.forEach((pos, i) => {
+    const heart = document.createElement("span");
+    heart.className = "time-magic-heart";
+    heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+    heart.style.left = `${x}px`;
+    heart.style.top = `${y}px`;
+    heart.style.setProperty("--tx", `${pos.x}px`);
+    heart.style.setProperty("--ty", `${pos.y}px`);
+    heart.style.animationDelay = `${i * 0.03}s`;
+
+    document.body.appendChild(heart);
+
+    setTimeout(() => {
+      heart.remove();
+    }, 1100);
+  });
+}
+
+function playRandomTimeMagic() {
+  const randomIndex = Math.floor(Math.random() * times.length);
+  selectedTime = times[randomIndex];
+
+  renderTimes();
+  renderPreview();
+
+  setTimeout(() => {
+    const selectedCard = document.querySelector('.time-card.selected');
+    if (!selectedCard) return;
+
+    selectedCard.classList.remove('magic-pick');
+    void selectedCard.offsetWidth;
+    selectedCard.classList.add('magic-pick');
+
+    const rect = selectedCard.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    createTimeMagicHearts(centerX, centerY);
+
+    setTimeout(() => {
+      selectedCard.classList.remove('magic-pick');
+    }, 1000);
+  }, 50);
+}
   </script>
 
 </body>
