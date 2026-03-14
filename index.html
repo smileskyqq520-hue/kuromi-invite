@@ -672,7 +672,7 @@
   position:relative;
   width:100%;
   height:100%;
-  transition:transform .7s ease;
+  transition:transform 1.6s ease;
   transform-style:preserve-3d;
 }
 
@@ -987,6 +987,78 @@
       height: 220px;
     }
   }
+    /* 抽卡前小抖動 */
+@keyframes cardShake{
+  0%{ transform: rotate(0deg); }
+  20%{ transform: rotate(-3deg); }
+  40%{ transform: rotate(3deg); }
+  60%{ transform: rotate(-2deg); }
+  80%{ transform: rotate(2deg); }
+  100%{ transform: rotate(0deg); }
+}
+
+.fortune-card.shake{
+  animation: cardShake .6s ease;
+}
+    /* ===== 抽卡升級特效 ===== */
+.fortune-card{
+  position: relative;
+  overflow: visible;
+}
+
+.fortune-card.glow::after{
+  content: "";
+  position: absolute;
+  inset: -24px;
+  border-radius: 34px;
+  background:
+    radial-gradient(circle, rgba(200,149,255,.52) 0%, rgba(146,86,255,.3) 34%, rgba(255,103,196,.14) 60%, transparent 78%);
+  filter: blur(14px);
+  z-index: -1;
+  animation: cardGlowPulse 1.15s ease-out;
+}
+
+@keyframes cardGlowPulse{
+  0%{
+    opacity: 0;
+    transform: scale(.82);
+  }
+  35%{
+    opacity: 1;
+    transform: scale(1.06);
+  }
+  100%{
+    opacity: 0;
+    transform: scale(1.18);
+  }
+}
+
+.card-magic-heart{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  font-size: 28px;
+  z-index: 12;
+  animation: magicHeartBurst 1.15s ease-out forwards;
+  filter: drop-shadow(0 6px 14px rgba(0,0,0,.28));
+}
+
+@keyframes magicHeartBurst{
+  0%{
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(0, 0) scale(.4);
+  }
+  20%{
+    opacity: 1;
+    transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) scale(1);
+  }
+  100%{
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(calc(var(--tx) * 1.45), calc(var(--ty) * 1.45)) scale(1.35);
+  }
+}
   </style>
 </head>
 <body>
@@ -1572,26 +1644,70 @@ gameKuromi.addEventListener('click', (e) => {
 
 const fortuneCard = document.getElementById('fortuneCard');
 
+function createCardMagicHearts() {
+  const hearts = ["💗", "💜", "💕", "💖", "♥"];
+  const positions = [
+    { x: -90, y: -70 },
+    { x: -55, y: -95 },
+    { x: 0, y: -110 },
+    { x: 55, y: -95 },
+    { x: 90, y: -70 },
+    { x: -100, y: -5 },
+    { x: 100, y: -5 }
+  ];
+
+  positions.forEach((pos, i) => {
+    const heart = document.createElement("span");
+    heart.className = "card-magic-heart";
+    heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+    heart.style.setProperty("--tx", `${pos.x}px`);
+    heart.style.setProperty("--ty", `${pos.y}px`);
+    heart.style.animationDelay = `${i * 0.04}s`;
+
+    fortuneCard.appendChild(heart);
+
+    setTimeout(() => {
+      heart.remove();
+    }, 1200);
+  });
+}
+
 drawCardBtn.addEventListener('click', () => {
   const cards = [
     '酷洛米說：今天適合吃漂亮飯 ♡',
     '抽到超級卡！今天跟育豪吃飯運氣會變超級好 ✦',
-    '大拇哥卡：獲得育豪的一個大姆哥！',
+    '幸運餐廳卡：今晚吃什麼都會很好吃',
     '甜甜卡：今天會有好心情和甜點',
-    '誠意滿滿卡：育豪今天誠意值 +100',
+    '大拇哥卡：育豪今天誠意值 +100',
     '可愛卡：姿瑩今天會遇到開心的事情 幸運值+100',
     '幸運時間卡：今天選哪個時段都會順利 ♡'
   ];
 
   const picked = cards[Math.floor(Math.random() * cards.length)];
 
-  fortuneCard.classList.remove('flipped');
+  fortuneCard.classList.remove('flipped', 'shake', 'glow');
+
+  void fortuneCard.offsetWidth; // 重新觸發動畫
+
+  fortuneCard.classList.add('shake');
 
   setTimeout(() => {
-    cardResult.textContent = picked;
-    fortuneCard.classList.add('flipped');
-  }, 150);
+    fortuneCard.classList.remove('shake');
+    fortuneCard.classList.add('glow');
+
+    createCardMagicHearts();
+
+    setTimeout(() => {
+      cardResult.textContent = picked;
+      fortuneCard.classList.add('flipped');
+    }, 220);
+
+    setTimeout(() => {
+      fortuneCard.classList.remove('glow');
+    }, 1000);
+  }, 600);
 });
+
 window.addEventListener('load', () => {
   const savedRestaurant = localStorage.getItem('replyRestaurant');
   const savedTime = localStorage.getItem('replyTime');
