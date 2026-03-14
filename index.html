@@ -1045,10 +1045,20 @@ const finalTime = document.getElementById('finalTime');
 const finalReply = document.getElementById('finalReply');
 const replyStatus = document.getElementById('replyStatus');
 submitChoiceBtn.addEventListener('click', () => {
-  finalRestaurant.textContent = selectedRestaurant ? selectedRestaurant.name : '尚未選擇';
-  finalTime.textContent = selectedTime ? selectedTime.main : '尚未選擇';
-  finalReply.textContent = replyMessage.value.trim() || '沒有特別留言 ♡';
- replyStatus.textContent = "狀態：姿瑩已經送出選擇了 ✦";
+  const savedRestaurant = selectedRestaurant ? selectedRestaurant.name : '尚未選擇';
+  const savedTime = selectedTime ? selectedTime.main : '尚未選擇';
+  const savedReply = replyMessage.value.trim() || '沒有特別留言 ♡';
+
+  finalRestaurant.textContent = savedRestaurant;
+  finalTime.textContent = savedTime;
+  finalReply.textContent = savedReply;
+  replyStatus.textContent = "狀態：姿瑩已經送出選擇了 ✦";
+
+  localStorage.setItem('replyRestaurant', savedRestaurant);
+  localStorage.setItem('replyTime', savedTime);
+  localStorage.setItem('replyMessage', savedReply);
+  localStorage.setItem('replyStatus', '狀態：姿瑩已經送出選擇了 ✦');
+
   alert('已經幫妳整理好這次的選擇了 ♡');
 });
     function renderRestaurants() {
@@ -1271,7 +1281,20 @@ drawCardBtn.addEventListener('click', () => {
     fortuneCard.classList.add('flipped');
   }, 150);
 });
+window.addEventListener('load', () => {
+  const savedRestaurant = localStorage.getItem('replyRestaurant');
+  const savedTime = localStorage.getItem('replyTime');
+  const savedReply = localStorage.getItem('replyMessage');
+  const savedStatus = localStorage.getItem('replyStatus');
 
+  if (savedRestaurant) finalRestaurant.textContent = savedRestaurant;
+  if (savedTime) finalTime.textContent = savedTime;
+  if (savedReply) {
+    finalReply.textContent = savedReply;
+    replyMessage.value = savedReply;
+  }
+  if (savedStatus) replyStatus.textContent = savedStatus;
+});
   </script>
 </body>
 </html>
