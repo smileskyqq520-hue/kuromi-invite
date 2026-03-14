@@ -795,6 +795,107 @@
     opacity:1;
   }
 }
+    .image-viewer{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.88);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+  padding: 30px;
+}
+
+.image-viewer.show{
+  display: flex;
+}
+
+.image-viewer img{
+  max-width: 88vw;
+  max-height: 88vh;
+  border-radius: 18px;
+  box-shadow: 0 24px 60px rgba(0,0,0,.55);
+  transition: transform .18s ease, opacity .18s ease;
+  cursor: grab;
+  user-select: none;
+}
+
+.viewer-close{
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255,255,255,.12);
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
+  z-index: 3002;
+}
+
+.viewer-arrow{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 54px;
+  height: 54px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255,255,255,.12);
+  color: white;
+  font-size: 34px;
+  cursor: pointer;
+  z-index: 3002;
+}
+
+.viewer-prev{
+  left: 24px;
+}
+
+.viewer-next{
+  right: 24px;
+}
+
+.viewer-close:hover,
+.viewer-arrow:hover{
+  background: rgba(255,255,255,.22);
+}
+
+.zoom-hint{
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.12);
+  color: #fff7ff;
+  font-size: 13px;
+  z-index: 3002;
+}
+
+@media (max-width: 768px){
+  .viewer-arrow{
+    width: 46px;
+    height: 46px;
+    font-size: 28px;
+  }
+
+  .viewer-prev{
+    left: 12px;
+  }
+
+  .viewer-next{
+    right: 12px;
+  }
+
+  .viewer-close{
+    top: 12px;
+    right: 12px;
+  }
+}
   </style>
 </head>
 <body>
@@ -1009,7 +1110,12 @@
   alt="Game Kuromi"
 >
   </main>
-
+<div id="imageViewer" class="image-viewer">
+  <button id="viewerClose" class="viewer-close">×</button>
+  <button id="viewerPrev" class="viewer-arrow viewer-prev">‹</button>
+  <img id="viewerImg" src="" alt="放大圖片">
+  <button id="viewerNext" class="viewer-arrow viewer-next">›</button>
+</div>
   <div class="modal" id="modal">
     <div class="dialog">
       <button class="close" id="closeModal">×</button>
@@ -1415,6 +1521,116 @@ document.addEventListener("click", function(e){
 viewer.addEventListener("click", () => {
   viewer.style.display = "none";
 });
+    const viewer = document.getElementById("imageViewer");
+const viewerImg = document.getElementById("viewerImg");
+const viewerClose = document.getElementById("viewerClose");
+const viewerPrev = document.getElementById("viewerPrev");
+const viewerNext = document.getElementById("viewerNext");
+
+let viewerImages = [];
+let viewerIndex = 0;
+let viewerScale = 1;
+
+function getAllZoomableImages(){
+  return Array.from(document.querySelectorAll(
+    ".cover, .dialog-hero, .gallery img, .kuromi-pic"
+  ));
+}
+
+function openImageViewer(images, index){
+  viewerImages = images;
+  viewerIndex = index;
+  viewerScale = 1;
+  updateViewerImage();
+  viewer.classList.add("show");
+  document.body.style.overflow = "hidden";
+}
+
+function updateViewerImage(){
+  if(!viewerImages.length) return;
+  viewerImg.src = viewerImages[viewerIndex].src;
+  viewerImg.style.transform = `scale(${viewerScale})`;
+  viewerImg.style.opacity = "0";
+
+  setTimeout(() => {
+    viewerImg.style.opacity = "1";
+  }, 30);
+}
+
+function closeImageViewer(){
+  viewer.classList.remove("show");
+  viewerImg.src = "";
+  viewerScale = 1;
+  document.body.style.overflow = "";
+}
+
+function showPrevImage(){
+  if(!viewerImages.length) return;
+  viewerIndex = (viewerIndex - 1 + viewerImages.length) % viewerImages.length;
+  viewerScale = 1;
+  updateViewerImage();
+}
+
+function showNextImage(){
+  if(!viewerImages.length) return;
+  viewerIndex = (viewerIndex + 1) % viewerImages.length;
+  viewerScale = 1;
+  updateViewerImage();
+}
+
+document.addEventListener("click", function(e){
+  const images = getAllZoomableImages();
+  const clickedIndex = images.findIndex(img => img === e.target);
+
+  if(clickedIndex !== -1){
+    openImageViewer(images, clickedIndex);
+  }
+});
+
+viewerClose.addEventListener("click", closeImageViewer);
+viewerPrev.addEventListener("click", (e) => {
+  e.stopPropagation();
+  showPrevImage();
+});
+viewerNext.addEventListener("click", (e) => {
+  e.stopPropagation();
+  showNextImage();
+});
+
+viewer.addEventListener("click", (e) => {
+  if(e.target === viewer){
+    closeImageViewer();
+  }
+});
+
+document.addEventListener("keydown", (e) => {
+  if(!viewer.classList.contains("show")) return;
+
+  if(e.key === "Escape"){
+    closeImageViewer();
+  }else if(e.key === "ArrowLeft"){
+    showPrevImage();
+  }else if(e.key === "ArrowRight"){
+    showNextImage();
+  }
+});
+
+viewer.addEventListener("wheel", (e) => {
+  if(!viewer.classList.contains("show")) return;
+
+  e.preventDefault();
+
+  if(e.deltaY < 0){
+    viewerScale += 0.12;
+  }else{
+    viewerScale -= 0.12;
+  }
+
+  if(viewerScale < 0.6) viewerScale = 0.6;
+  if(viewerScale > 3) viewerScale = 3;
+
+  viewerImg.style.transform = `scale(${viewerScale})`;
+}, { passive: false });
   </script>
   <div id="imageViewer" class="image-viewer">
   <img id="viewerImg" src="">
