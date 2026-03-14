@@ -896,6 +896,97 @@
     right: 12px;
   }
 }
+      /* ===== 小甜點森林 ===== */
+  .dessert-slider{
+    overflow: hidden;
+    width: 100%;
+    border-radius: 24px;
+    position: relative;
+  }
+
+  .dessert-track{
+    display: flex;
+    gap: 16px;
+    transition: transform 1s ease;
+  }
+
+  .dessert-item{
+    position: relative;
+    width: calc((100% - 32px) / 3);
+    flex: 0 0 calc((100% - 32px) / 3);
+  }
+
+  .dessert-item img{
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 20px;
+    display: block;
+    box-shadow: 0 12px 24px rgba(0,0,0,.22);
+    transition: transform .35s ease, box-shadow .35s ease, filter .35s ease;
+    animation: dessertFloat 3.8s ease-in-out infinite;
+  }
+
+  .dessert-item:nth-child(2) img{ animation-delay: .4s; }
+  .dessert-item:nth-child(3) img{ animation-delay: .8s; }
+  .dessert-item:nth-child(4) img{ animation-delay: 1.2s; }
+  .dessert-item:nth-child(5) img{ animation-delay: 1.6s; }
+  .dessert-item:nth-child(6) img{ animation-delay: 2s; }
+
+  .dessert-item:hover img{
+    transform: scale(1.06);
+    box-shadow: 0 20px 36px rgba(0,0,0,.3);
+    filter: brightness(1.06) saturate(1.08);
+  }
+
+  .dessert-hearts{
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  .dessert-heart{
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 18px;
+    opacity: 0;
+    animation: dessertHeartFloat 1.6s ease-out forwards;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,.18));
+  }
+
+  @keyframes dessertFloat{
+    0%{ transform: translateY(0); }
+    50%{ transform: translateY(-8px); }
+    100%{ transform: translateY(0); }
+  }
+
+  @keyframes dessertHeartFloat{
+    0%{
+      opacity: 0;
+      transform: translateX(-50%) translateY(0) scale(.7);
+    }
+    20%{
+      opacity: 1;
+    }
+    100%{
+      opacity: 0;
+      transform: translateX(-50%) translateY(-70px) scale(1.25);
+    }
+  }
+
+  @media (max-width: 980px){
+    .dessert-item{
+      width: 100%;
+      flex: 0 0 100%;
+    }
+
+    .dessert-item img{
+      height: 220px;
+    }
+  }
   </style>
 </head>
 <body>
@@ -975,17 +1066,50 @@
 
   <div class="dessert-slider">
     <div class="dessert-track" id="dessertTrack">
-      <img src="https://iladycake.weebly.com/uploads/1/2/9/6/129675716/16007_2_orig.jpg">
-      <img src="https://iladycake.weebly.com/uploads/1/2/9/6/129675716/16006_2_orig.jpg">
-      <img src="https://iladycake.weebly.com/uploads/1/2/9/6/129675716/3938_3_orig.jpg">
-      <img src="https://iladycake.weebly.com/uploads/1/2/9/6/129675716/1994045920_3_orig.jpg">
-      <img src="https://iladycake.weebly.com/uploads/1/2/9/6/129675716/1530636363_3_orig.jpg">
-      <img src="https://iladycake.weebly.com/uploads/1/2/9/6/129675716/2102627162_1_orig.jpg">
-      <img src="https://iladycake.weebly.com/uploads/1/2/9/6/129675716/aileti-6_1_orig.jpg">
-      <img src="https://iladycake.weebly.com/uploads/1/2/9/6/129675716/730322160_1_orig.jpg">
-      <img src="https://iladycake.weebly.com/uploads/1/2/9/6/129675716/27227_1_orig.jpg">
-    </div>
+      <div class="dessert-item">
+    <img src="https://iladycake.weebly.com/uploads/1/2/9/6/129675716/16007_2_orig.jpg">
+    <div class="dessert-hearts"></div>
   </div>
+
+  <div class="dessert-item">
+    <img src="https://iladycake.weebly.com/uploads/1/2/9/6/129675716/16006_2_orig.jpg">
+    <div class="dessert-hearts"></div>
+  </div>
+
+  <div class="dessert-item">
+    <img src="https://iladycake.weebly.com/uploads/1/2/9/6/129675716/3938_3_orig.jpg">
+    <div class="dessert-hearts"></div>
+  </div>
+
+  <div class="dessert-item">
+    <img src="https://iladycake.weebly.com/uploads/1/2/9/6/129675716/1994045920_3_orig.jpg">
+    <div class="dessert-hearts"></div>
+  </div>
+
+  <div class="dessert-item">
+    <img src="https://iladycake.weebly.com/uploads/1/2/9/6/129675716/1530636363_3_orig.jpg">
+    <div class="dessert-hearts"></div>
+  </div>
+
+  <div class="dessert-item">
+    <img src="https://iladycake.weebly.com/uploads/1/2/9/6/129675716/2102627162_1_orig.jpg">
+    <div class="dessert-hearts"></div>
+  </div>
+      <div class="dessert-item">
+    <img src="https://iladycake.weebly.com/uploads/1/2/9/6/129675716/aileti-6_1_orig.jpg">
+    <div class="dessert-hearts"></div>
+  </div>
+  <div class="dessert-item">
+    <img src="https://iladycake.weebly.com/uploads/1/2/9/6/129675716/730322160_1_orig.jpg">
+    <div class="dessert-hearts"></div>
+  </div>
+ <div class="dessert-item">
+    <img src="https://iladycake.weebly.com/uploads/1/2/9/6/129675716/27227_1_orig.jpg">
+    <div class="dessert-hearts"></div>
+  </div>
+</div>
+</div>
+    
 </section>
     <section class="section" id="time">
       <div class="section-head">
@@ -1452,9 +1576,9 @@ drawCardBtn.addEventListener('click', () => {
   const cards = [
     '酷洛米說：今天適合吃漂亮飯 ♡',
     '抽到超級卡！今天跟育豪吃飯運氣會變超級好 ✦',
-    '幸運餐廳卡：黑莓月光 Bistro',
+    '大拇哥卡：獲得育豪的一個大姆哥！',
     '甜甜卡：今天會有好心情和甜點',
-    '大拇哥卡：育豪今天誠意值 +100',
+    '誠意滿滿卡：育豪今天誠意值 +100',
     '可愛卡：姿瑩今天會遇到開心的事情 幸運值+100',
     '幸運時間卡：今天選哪個時段都會順利 ♡'
   ];
@@ -1617,6 +1741,44 @@ viewer.addEventListener("wheel", (e) => {
 
   viewerImg.style.transform = `scale(${viewerScale})`;
 }, { passive: false });
+
+    /* ===== 小甜點森林效果 ===== */
+const dessertItems = document.querySelectorAll(".dessert-item");
+
+function createDessertHeart(container){
+  const hearts = ["💗","💖","💕","💜","♥"];
+  const heart = document.createElement("span");
+  heart.className = "dessert-heart";
+  heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+
+  heart.style.left = `${35 + Math.random() * 30}%`;
+  heart.style.bottom = `${18 + Math.random() * 12}px`;
+
+  container.appendChild(heart);
+
+  setTimeout(() => {
+    heart.remove();
+  }, 1600);
+}
+
+dessertItems.forEach(item => {
+  const heartBox = item.querySelector(".dessert-hearts");
+
+  let heartTimer = null;
+
+  item.addEventListener("mouseenter", () => {
+    createDessertHeart(heartBox);
+    heartTimer = setInterval(() => {
+      createDessertHeart(heartBox);
+    }, 420);
+  });
+
+  item.addEventListener("mouseleave", () => {
+    clearInterval(heartTimer);
+    heartTimer = null;
+  });
+});
+  
   </script>
 
 </body>
