@@ -1685,14 +1685,22 @@
     </div>
   </div>
 <div id="introOverlay" class="intro-overlay">
-  <div id="introDialog" class="intro-dialog" role="button" tabindex="0" aria-label="Kuromi 開場對話">
-    <div class="intro-kuromi">
-      <img src="https://stickershop.line-scdn.net/stickershop/v1/sticker/353004277/ANDROID/sticker.png" alt="Kuromi">
+  <div class="intro-stage">
+    <div class="intro-figure-wrap">
+      <img
+        id="introFigure"
+        class="intro-figure"
+        src="https://stickershop.line-scdn.net/stickershop/v1/sticker/353004277/ANDROID/sticker.png"
+        alt="Kuromi"
+      >
     </div>
-    <div class="intro-content">
-      <div class="intro-name">KUROMI NPC ✦</div>
-      <div id="introText" class="intro-text"></div>
-      <div id="introHint" class="intro-hint">點一下繼續 ➜</div>
+
+    <div id="introDialog" class="intro-dialog" role="button" tabindex="0" aria-label="Kuromi 開場對話">
+      <div class="intro-content full">
+        <div class="intro-name">✦ 酷洛米 ✦</div>
+        <div id="introText" class="intro-text"></div>
+        <div id="introHint" class="intro-hint">點一下繼續 ➜</div>
+      </div>
     </div>
   </div>
 </div>
@@ -2520,47 +2528,128 @@ function playRandomRestaurantMagic() {
     }, 1150);
   }, 80);
 }
-    /* ===== 開場 Kuromi NPC 對話 ===== */
+/* ===== 開場 Kuromi NPC 對話 + 打字機 + 換圖 ===== */
 window.addEventListener('DOMContentLoaded', () => {
   const introOverlay = document.getElementById('introOverlay');
   const introDialog = document.getElementById('introDialog');
   const introText = document.getElementById('introText');
   const introHint = document.getElementById('introHint');
+  const introFigure = document.getElementById('introFigure');
 
-  const introLines = [
-    "姿瑩歡迎來到酷洛米的小叢林 ✦",
-    "這裡是育豪幫妳偷偷準備的漂亮飯選擇網站。",
-    "妳可以慢慢看餐廳、選時間，甚至讓我幫妳隨機決定。",
-    "如果選擇障礙發作了，就交給酷洛米來幫妳吧 ♡"
+  const introScenes = [
+    {
+      text: "姿瑩歡迎來到酷洛米的小叢林 ✦",
+      image: "https://stickershop.line-scdn.net/stickershop/v1/sticker/353004277/ANDROID/sticker.png"
+    },
+    {
+      text: "這裡是育豪幫妳偷偷準備的漂亮飯選擇網站。",
+      image: "https://stickershop.line-scdn.net/stickershop/v1/sticker/353004271/android/sticker.png"
+    },
+    {
+      text: "妳可以慢慢看餐廳、選時間，甚至讓我幫妳隨機決定。",
+      image: "https://stickershop.line-scdn.net/stickershop/v1/sticker/12981598/android/sticker.png"
+    },
+    {
+      text: "如果選擇障礙發作了，就交給酷洛米來幫妳吧 ♡",
+      image: "https://stickershop.line-scdn.net/stickershop/v1/sticker/12981593/android/sticker.png"
+    }
   ];
 
   let introIndex = 0;
+  let isTypingIntro = false;
+  let typingTimer = null;
+  let fullCurrentText = "";
 
-  function showIntroLine() {
-    introText.textContent = introLines[introIndex];
-    introHint.textContent =
-      introIndex === introLines.length - 1
-        ? "點一下開始逛網站 ➜"
-        : "點一下繼續 ➜";
+  document.body.style.overflow = 'hidden';
+
+  function updateIntroHint() {
+    if (isTypingIntro) {
+      introHint.textContent = "點一下可直接顯示全文 ➜";
+    } else {
+      introHint.textContent =
+        introIndex === introScenes.length - 1
+          ? "點一下開始逛網站 ➜"
+          : "點一下繼續 ➜";
+    }
+  }
+
+  function changeIntroImage(src) {
+    if (!introFigure) return;
+    introFigure.classList.remove('swap');
+    void introFigure.offsetWidth;
+    introFigure.src = src;
+    introFigure.classList.add('swap');
+  }
+
+  function typeIntroText(text) {
+    clearInterval(typingTimer);
+    fullCurrentText = text;
+    introText.textContent = "";
+    introText.classList.add("typing");
+    isTypingIntro = true;
+    updateIntroHint();
+
+    let charIndex = 0;
+
+    typingTimer = setInterval(() => {
+      introText.textContent += text.charAt(charIndex);
+      charIndex++;
+
+      if (charIndex >= text.length) {
+        clearInterval(typingTimer);
+        typingTimer = null;
+        isTypingIntro = false;
+        introText.classList.remove("typing");
+        updateIntroHint();
+      }
+    }, 42);
+  }
+
+  function showIntroScene() {
+    const scene = introScenes[introIndex];
+    if (!scene) return;
+    changeIntroImage(scene.image);
+    typeIntroText(scene.text);
+  }
+
+  function finishTypingImmediately() {
+    clearInterval(typingTimer);
+    typingTimer = null;
+    introText.textContent = fullCurrentText;
+    introText.classList.remove("typing");
+    isTypingIntro = false;
+    updateIntroHint();
+  }
+
+  function closeIntro() {
+    introOverlay.classList.add('hide');
+    document.body.style.overflow = '';
+    setTimeout(() => {
+      introOverlay.remove();
+    }, 450);
   }
 
   function nextIntroLine() {
-    introIndex++;
-
-    if (introIndex >= introLines.length) {
-      introOverlay.classList.add('hide');
-      setTimeout(() => {
-        introOverlay.remove();
-      }, 450);
+    if (isTypingIntro) {
+      finishTypingImmediately();
       return;
     }
 
-    showIntroLine();
+    introIndex++;
+
+    if (introIndex >= introScenes.length) {
+      closeIntro();
+      return;
+    }
+
+    showIntroScene();
   }
 
-  if (introOverlay && introDialog && introText && introHint) {
-    showIntroLine();
+  if (introOverlay && introDialog && introText && introHint && introFigure) {
+    showIntroScene();
+
     introDialog.addEventListener('click', nextIntroLine);
+
     introDialog.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
@@ -2569,6 +2658,96 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+    .intro-stage{
+  width: min(980px, 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.intro-figure-wrap{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 180px;
+}
+
+.intro-figure{
+  width: 170px;
+  max-width: 42vw;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 16px 28px rgba(0,0,0,.35));
+  animation: introFigureFloat 2.2s ease-in-out infinite;
+  transition: transform .28s ease, opacity .28s ease;
+}
+
+.intro-figure.swap{
+  animation: introFigureSwap .32s ease;
+}
+
+@keyframes introFigureFloat{
+  0%{ transform: translateY(0) scale(1); }
+  50%{ transform: translateY(-10px) scale(1.02); }
+  100%{ transform: translateY(0) scale(1); }
+}
+
+@keyframes introFigureSwap{
+  0%{ opacity: .35; transform: translateY(8px) scale(.92); }
+  100%{ opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* 讓原本左右兩欄改成單欄 */
+.intro-dialog{
+  width: min(920px, 100%);
+  min-height: 220px;
+  border-radius: 30px;
+  border: 1px solid rgba(255,255,255,.1);
+  background: linear-gradient(180deg, rgba(46,20,58,.98), rgba(20,8,24,.98));
+  box-shadow: 0 24px 60px rgba(0,0,0,.4);
+  display: block;
+  padding: 24px 26px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.intro-content.full{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.intro-text.typing::after{
+  content: "▋";
+  display: inline-block;
+  margin-left: 4px;
+  color: #ffd8f0;
+  animation: introCursorBlink .8s infinite;
+}
+
+@keyframes introCursorBlink{
+  0%, 49%{ opacity: 1; }
+  50%, 100%{ opacity: 0; }
+}
+
+@media (max-width: 768px){
+  .intro-stage{
+    gap: 12px;
+  }
+
+  .intro-figure{
+    width: 120px;
+    max-width: 48vw;
+  }
+
+  .intro-dialog{
+    padding: 20px;
+    min-height: 200px;
+  }
+}
   </script>
 </body>
 </html>
