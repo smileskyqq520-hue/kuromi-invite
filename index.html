@@ -2644,7 +2644,10 @@ window.addEventListener('DOMContentLoaded', () => {
       image: "https://stickershop.line-scdn.net/stickershop/v1/sticker/12981593/android/sticker.png"
     }
   ];
-
+introScenes.forEach(scene => {
+  const img = new Image();
+  img.src = scene.image;
+});
   let introIndex = 0;
   let isTypingIntro = false;
   let typingTimer = null;
@@ -2692,7 +2695,8 @@ window.addEventListener('DOMContentLoaded', () => {
         introText.classList.remove("typing");
         updateIntroHint();
       }
-    }, 42);
+   const introTypingSpeed = 50;
+    }, introTypingSpeed);
   }
 
   function showIntroScene() {
@@ -2712,12 +2716,14 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   function closeIntro() {
-    introOverlay.classList.add('hide');
-    document.body.style.overflow = '';
-    setTimeout(() => {
-      introOverlay.remove();
-    }, 450);
-  }
+  clearInterval(typingTimer);
+  typingTimer = null;
+  introOverlay.classList.add('hide');
+  document.body.style.overflow = '';
+  setTimeout(() => {
+    introOverlay.remove();
+  }, 450);
+}
 
   function nextIntroLine() {
     if (isTypingIntro) {
