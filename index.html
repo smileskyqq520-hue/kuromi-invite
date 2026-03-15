@@ -1804,9 +1804,8 @@
 <audio id="typeSound" preload="auto">
   <source src="https://files.catbox.moe/alu041.mp3">
 </audio>
-
-<audio id="kuromiVoice" preload="auto">
-  <source src="https://files.catbox.moe/alu041.mp3">
+<audio id="bgMusic" loop preload="auto">
+  <source src="https://files.catbox.moe/pwyitb.mp3" type="audio/mpeg">
 </audio>
   <script>
     const restaurants = [
@@ -2841,7 +2840,7 @@ function setupIntroReplay() {
 
 function unlockIntroAudio() {
   const typeSound = document.getElementById('typeSound');
-  const kuromiVoice = document.getElementById('kuromiVoice');
+  const bgMusic = document.getElementById('bgMusic');
 
   if (introState.audioUnlocked) return;
   introState.audioUnlocked = true;
@@ -2853,11 +2852,9 @@ function unlockIntroAudio() {
     }).catch(() => {});
   }
 
-  if (kuromiVoice) {
-    kuromiVoice.play().then(() => {
-      kuromiVoice.pause();
-      kuromiVoice.currentTime = 0;
-    }).catch(() => {});
+  if (bgMusic) {
+    bgMusic.volume = 0.22;
+    bgMusic.play().catch(() => {});
   }
 }
 
@@ -2934,17 +2931,18 @@ function typeIntroText(text) {
 }
 
 function showIntroScene() {
-  const kuromiVoice = document.getElementById('kuromiVoice');
   const scene = introScenes[introState.introIndex];
   if (!scene) return;
 
   changeIntroImage(scene.image);
 
-  if (kuromiVoice) kuromiVoice.volume = 0.35;
-  if (introState.audioUnlocked && kuromiVoice) {
-    kuromiVoice.currentTime = 0;
-    kuromiVoice.play().catch(() => {});
-  }
+function showIntroScene() {
+  const scene = introScenes[introState.introIndex];
+  if (!scene) return;
+
+  changeIntroImage(scene.image);
+  typeIntroText(scene.text);
+}
 
   typeIntroText(scene.text);
 }
@@ -3021,7 +3019,6 @@ function bindIntroDialogEvents() {
 function startIntro(forceReplay = false) {
   const introOverlay = document.getElementById('introOverlay');
   const typeSound = document.getElementById('typeSound');
-  const kuromiVoice = document.getElementById('kuromiVoice');
 
   if (!introOverlay) return;
 
@@ -3040,7 +3037,6 @@ function startIntro(forceReplay = false) {
   introState.isActive = true;
 
   if (typeSound) typeSound.volume = 0.18;
-  if (kuromiVoice) kuromiVoice.volume = 0.35;
 
   introOverlay.style.display = 'flex';
   introOverlay.classList.remove('hide');
