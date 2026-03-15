@@ -2863,13 +2863,20 @@ function playTypeTick() {
   if (!typeSound || !introState.audioUnlocked) return;
 
   const now = Date.now();
-  if (now - introState.lastTypeTickTime < 80) return;
+  if (now - introState.lastTypeTickTime < 120) return;
   introState.lastTypeTickTime = now;
 
-  const tick = typeSound.cloneNode(true);
-  tick.volume = 0.12;
-  tick.playbackRate = 0.7;
-  tick.play().catch(() => {});
+  typeSound.pause();
+  typeSound.currentTime = 0;
+  typeSound.volume = 0.08;
+  typeSound.playbackRate = 0.65;
+
+  typeSound.play().catch(() => {});
+
+  setTimeout(() => {
+    typeSound.pause();
+    typeSound.currentTime = 0;
+  }, 90);
 }
 
 function updateIntroHint() {
