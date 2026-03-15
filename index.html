@@ -1684,7 +1684,18 @@
       </div>
     </div>
   </div>
-
+<div id="introOverlay" class="intro-overlay">
+  <div id="introDialog" class="intro-dialog" role="button" tabindex="0" aria-label="Kuromi 開場對話">
+    <div class="intro-kuromi">
+      <img src="https://stickershop.line-scdn.net/stickershop/v1/sticker/353004277/ANDROID/sticker.png" alt="Kuromi">
+    </div>
+    <div class="intro-content">
+      <div class="intro-name">KUROMI NPC ✦</div>
+      <div id="introText" class="intro-text"></div>
+      <div id="introHint" class="intro-hint">點一下繼續 ➜</div>
+    </div>
+  </div>
+</div>
   <script>
     const restaurants = [
       {
@@ -2510,68 +2521,54 @@ function playRandomRestaurantMagic() {
   }, 80);
 }
     /* ===== 開場 Kuromi NPC 對話 ===== */
-const introOverlay = document.getElementById('introOverlay');
-const introDialog = document.getElementById('introDialog');
-const introText = document.getElementById('introText');
-const introHint = document.getElementById('introHint');
+window.addEventListener('DOMContentLoaded', () => {
+  const introOverlay = document.getElementById('introOverlay');
+  const introDialog = document.getElementById('introDialog');
+  const introText = document.getElementById('introText');
+  const introHint = document.getElementById('introHint');
 
-const introLines = [
-  "姿瑩歡迎來到酷洛米的小叢林 ✦",
-  "這裡是育豪幫妳偷偷準備的漂亮飯選擇網站。",
-  "妳可以慢慢看餐廳、選時間，甚至讓我幫妳隨機決定。",
-  "如果選擇障礙發作了，就交給酷洛米來幫妳吧 ♡"
-];
+  const introLines = [
+    "姿瑩歡迎來到酷洛米的小叢林 ✦",
+    "這裡是育豪幫妳偷偷準備的漂亮飯選擇網站。",
+    "妳可以慢慢看餐廳、選時間，甚至讓我幫妳隨機決定。",
+    "如果選擇障礙發作了，就交給酷洛米來幫妳吧 ♡"
+  ];
 
-let introIndex = 0;
+  let introIndex = 0;
 
-function showIntroLine() {
-  introText.textContent = introLines[introIndex];
-
-  if (introIndex === introLines.length - 1) {
-    introHint.textContent = "點一下開始逛網站 ➜";
-  } else {
-    introHint.textContent = "點一下繼續 ➜";
-  }
-}
-
-function nextIntroLine() {
-  introIndex++;
-
-  if (introIndex >= introLines.length) {
-    introOverlay.classList.add('hide');
-    setTimeout(() => {
-      introOverlay.remove();
-    }, 450);
-    return;
+  function showIntroLine() {
+    introText.textContent = introLines[introIndex];
+    introHint.textContent =
+      introIndex === introLines.length - 1
+        ? "點一下開始逛網站 ➜"
+        : "點一下繼續 ➜";
   }
 
-  showIntroLine();
-}
+  function nextIntroLine() {
+    introIndex++;
 
-if (introOverlay && introDialog && introText) {
-  showIntroLine();
-
-  introDialog.addEventListener('click', nextIntroLine);
-
-  introDialog.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      nextIntroLine();
+    if (introIndex >= introLines.length) {
+      introOverlay.classList.add('hide');
+      setTimeout(() => {
+        introOverlay.remove();
+      }, 450);
+      return;
     }
-  });
-}
+
+    showIntroLine();
+  }
+
+  if (introOverlay && introDialog && introText && introHint) {
+    showIntroLine();
+    introDialog.addEventListener('click', nextIntroLine);
+    introDialog.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        nextIntroLine();
+      }
+    });
+  }
+});
   </script>
-<div id="introOverlay" class="intro-overlay">
-  <div id="introDialog" class="intro-dialog" role="button" tabindex="0" aria-label="Kuromi 開場對話">
-    <div class="intro-kuromi">
-      <img src="https://stickershop.line-scdn.net/stickershop/v1/sticker/353004277/ANDROID/sticker.png" alt="Kuromi">
-    </div>
-    <div class="intro-content">
-      <div class="intro-name">KUROMI NPC ✦</div>
-      <div id="introText" class="intro-text"></div>
-      <div id="introHint" class="intro-hint">點一下繼續 ➜</div>
-    </div>
-  </div>
-</div>
 </body>
 </html>
