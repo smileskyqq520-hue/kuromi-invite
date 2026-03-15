@@ -1272,6 +1272,151 @@
     transform: translate(-50%, -50%) translate(calc(var(--tx) * 1.5), calc(var(--ty) * 1.5)) scale(1.35);
   }
 }
+    /* ===== 開場 Kuromi NPC 對話 ===== */
+.intro-overlay{
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 28px;
+  background:
+    linear-gradient(to top, rgba(8, 3, 12, 0.88), rgba(8, 3, 12, 0.45)),
+    rgba(0,0,0,.2);
+  backdrop-filter: blur(6px);
+}
+
+.intro-overlay.hide{
+  animation: introFadeOut .45s ease forwards;
+}
+
+@keyframes introFadeOut{
+  to{
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.intro-dialog{
+  width: min(920px, 100%);
+  min-height: 220px;
+  border-radius: 30px;
+  border: 1px solid rgba(255,255,255,.1);
+  background: linear-gradient(180deg, rgba(46,20,58,.98), rgba(20,8,24,.98));
+  box-shadow: 0 24px 60px rgba(0,0,0,.4);
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 18px;
+  padding: 24px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.intro-dialog::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at top right, rgba(255,177,234,.10), transparent 26%),
+    radial-gradient(circle at bottom left, rgba(146,86,255,.12), transparent 26%);
+}
+
+.intro-kuromi{
+  display: flex;
+  align-items: end;
+  justify-content: center;
+}
+
+.intro-kuromi img{
+  width: 145px;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 20px rgba(0,0,0,.28));
+  animation: introKuromiFloat 2.2s ease-in-out infinite;
+}
+
+@keyframes introKuromiFloat{
+  0%{ transform: translateY(0); }
+  50%{ transform: translateY(-8px); }
+  100%{ transform: translateY(0); }
+}
+
+.intro-content{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.intro-name{
+  display: inline-block;
+  align-self: flex-start;
+  margin-bottom: 10px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255,103,196,.14);
+  border: 1px solid rgba(255,177,234,.18);
+  color: var(--pink-2);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.intro-text{
+  font-size: 24px;
+  line-height: 1.8;
+  color: #fff7ff;
+  min-height: 92px;
+  white-space: pre-line;
+}
+
+.intro-hint{
+  margin-top: 14px;
+  align-self: flex-end;
+  color: #f8d8ef;
+  font-size: 14px;
+  font-weight: 800;
+  opacity: .92;
+  animation: introHintBlink 1s ease-in-out infinite;
+}
+
+@keyframes introHintBlink{
+  0%, 100%{ opacity: .35; transform: translateY(0); }
+  50%{ opacity: 1; transform: translateY(2px); }
+}
+
+@media (max-width: 768px){
+  .intro-overlay{
+    padding: 16px;
+  }
+
+  .intro-dialog{
+    grid-template-columns: 1fr;
+    min-height: auto;
+    padding: 20px;
+  }
+
+  .intro-kuromi{
+    justify-content: flex-start;
+  }
+
+  .intro-kuromi img{
+    width: 110px;
+  }
+
+  .intro-text{
+    font-size: 20px;
+    min-height: 110px;
+  }
+
+  .intro-hint{
+    font-size: 13px;
+  }
+}
   </style>
 </head>
 <body>
@@ -2364,7 +2509,69 @@ function playRandomRestaurantMagic() {
     }, 1150);
   }, 80);
 }
-  </script>
+    /* ===== 開場 Kuromi NPC 對話 ===== */
+const introOverlay = document.getElementById('introOverlay');
+const introDialog = document.getElementById('introDialog');
+const introText = document.getElementById('introText');
+const introHint = document.getElementById('introHint');
 
+const introLines = [
+  "姿瑩歡迎來到酷洛米的小叢林 ✦",
+  "這裡是育豪幫妳偷偷準備的漂亮飯選擇網站。",
+  "妳可以慢慢看餐廳、選時間，甚至讓我幫妳隨機決定。",
+  "如果選擇障礙發作了，就交給酷洛米來幫妳吧 ♡"
+];
+
+let introIndex = 0;
+
+function showIntroLine() {
+  introText.textContent = introLines[introIndex];
+
+  if (introIndex === introLines.length - 1) {
+    introHint.textContent = "點一下開始逛網站 ➜";
+  } else {
+    introHint.textContent = "點一下繼續 ➜";
+  }
+}
+
+function nextIntroLine() {
+  introIndex++;
+
+  if (introIndex >= introLines.length) {
+    introOverlay.classList.add('hide');
+    setTimeout(() => {
+      introOverlay.remove();
+    }, 450);
+    return;
+  }
+
+  showIntroLine();
+}
+
+if (introOverlay && introDialog && introText) {
+  showIntroLine();
+
+  introDialog.addEventListener('click', nextIntroLine);
+
+  introDialog.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      nextIntroLine();
+    }
+  });
+}
+  </script>
+<div id="introOverlay" class="intro-overlay">
+  <div id="introDialog" class="intro-dialog" role="button" tabindex="0" aria-label="Kuromi 開場對話">
+    <div class="intro-kuromi">
+      <img src="https://stickershop.line-scdn.net/stickershop/v1/sticker/353004277/ANDROID/sticker.png" alt="Kuromi">
+    </div>
+    <div class="intro-content">
+      <div class="intro-name">KUROMI NPC ✦</div>
+      <div id="introText" class="intro-text"></div>
+      <div id="introHint" class="intro-hint">點一下繼續 ➜</div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
