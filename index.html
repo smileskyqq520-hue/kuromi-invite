@@ -1802,7 +1802,7 @@
   </div>
 </div>
 <audio id="typeSound" preload="auto">
-  <source src="https://files.catbox.moe/alu041.mp3">
+  <source src="https://files.catbox.moe/alu041.mp3" type="audio/mpeg">
 </audio>
 <audio id="bgMusic" loop preload="auto">
   <source src="https://files.catbox.moe/pwyitb.mp3" type="audio/mpeg">
@@ -2929,12 +2929,6 @@ function typeIntroText(text) {
     }
   }, introTypingSpeed);
 }
-
-function showIntroScene() {
-  const scene = introScenes[introState.introIndex];
-  if (!scene) return;
-
-  changeIntroImage(scene.image);
 
 function showIntroScene() {
   const scene = introScenes[introState.introIndex];
