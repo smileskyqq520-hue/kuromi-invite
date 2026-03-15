@@ -2853,7 +2853,7 @@ function unlockIntroAudio() {
   }
 
   if (bgMusic) {
-    bgMusic.volume = 0.22;
+    bgMusic.volume = 0.15;
     bgMusic.play().catch(() => {});
   }
 }
@@ -2867,7 +2867,7 @@ function playTypeTick() {
   introState.lastTypeTickTime = now;
 
   const tick = typeSound.cloneNode(true);
-  tick.volume = 0.18;
+  tick.volume = 0.12;
   tick.playbackRate = 1.12;
   tick.play().catch(() => {});
 }
