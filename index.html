@@ -2684,19 +2684,30 @@ introScenes.forEach(scene => {
 
     let charIndex = 0;
 
-    typingTimer = setInterval(() => {
-      introText.textContent += text.charAt(charIndex);
-      charIndex++;
+    function typeIntroText(text) {
+  clearInterval(typingTimer);
+  fullCurrentText = text;
+  introText.textContent = "";
+  introText.classList.add("typing");
+  isTypingIntro = true;
+  updateIntroHint();
 
-      if (charIndex >= text.length) {
-        clearInterval(typingTimer);
-        typingTimer = null;
-        isTypingIntro = false;
-        introText.classList.remove("typing");
-        updateIntroHint();
-      }
-   const introTypingSpeed = 50;
-    }, introTypingSpeed);
+  let charIndex = 0;
+  const introTypingSpeed = 50;
+
+  typingTimer = setInterval(() => {
+    introText.textContent += text.charAt(charIndex);
+    charIndex++;
+
+    if (charIndex >= text.length) {
+      clearInterval(typingTimer);
+      typingTimer = null;
+      isTypingIntro = false;
+      introText.classList.remove("typing");
+      updateIntroHint();
+    }
+  }, introTypingSpeed);
+}
   }
 
   function showIntroScene() {
