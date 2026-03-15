@@ -2633,8 +2633,42 @@ window.addEventListener('DOMContentLoaded', () => {
   const introHint = document.getElementById('introHint');
   const introFigure = document.getElementById('introFigure');
   const typeSound = document.getElementById('typeSound');
-  const kuromiVoice = document.getElementById('kuromiVoice');
-  
+const kuromiVoice = document.getElementById('kuromiVoice');
+let audioUnlocked = false;
+
+function unlockAudio() {
+  if (audioUnlocked) return;
+  audioUnlocked = true;
+
+  if (typeSound) {
+    typeSound.play().then(() => {
+      typeSound.pause();
+      typeSound.currentTime = 0;
+    }).catch(() => {});
+  }
+
+  if (kuromiVoice) {
+    kuromiVoice.play().then(() => {
+      kuromiVoice.pause();
+      kuromiVoice.currentTime = 0;
+    }).catch(() => {});
+  }
+}
+
+function playTypeTick() {
+  if (!typeSound || !audioUnlocked) return;
+
+  const tick = typeSound.cloneNode(true);
+  tick.volume = 0.18;
+  tick.playbackRate = 1.12;
+  tick.play().catch(() => {});
+
+  tick.addEventListener('ended', () => {
+    tick.remove();
+  });
+}
+  if (typeSound) typeSound.volume = 0.18;
+if (kuromiVoice) kuromiVoice.volume = 0.35;
   const introScenes = [
     {
       text: "姿瑩歡迎來到酷洛米的小叢林 ✦",
@@ -2648,7 +2682,7 @@ window.addEventListener('DOMContentLoaded', () => {
       text: "既然如此！我先來教姿瑩要怎麼吃美味的馬卡龍蛋糕！",
       image: "https://stickershop.line-scdn.net/stickershop/v1/sticker/353004271/android/sticker.png"
     },
-  　 {
+     {
       text: "首先！袋子裡面應該有小刀子跟叉子吧？先拿出來吧！",
       image: "https://stickershop.line-scdn.net/stickershop/v1/sticker/353004271/android/sticker.png"
     },
@@ -2660,7 +2694,7 @@ window.addEventListener('DOMContentLoaded', () => {
       text: "然後拿起刀子！將內餡切成1/2或是3等分、4等分都可以！，剛剛一旁的馬卡龍蓋子也比照辦理！",
       image: "https://stickershop.line-scdn.net/stickershop/v1/sticker/353004271/android/sticker.png"
     },
-   　{
+     {
       text: "再來把一旁的馬卡龍蓋上去！就大功告成了！當吃漢堡一樣吃就可以囉！這樣餡料才不會噴出來！",
       image: "https://stickershop.line-scdn.net/stickershop/v1/sticker/353004271/android/sticker.png"
     },
@@ -2676,7 +2710,7 @@ window.addEventListener('DOMContentLoaded', () => {
       text: "設計者就是育豪！他說姿瑩很喜歡酷洛米，所以拜託我免費來跟姿瑩聊聊天。",
       image: "https://stickershop.line-scdn.net/stickershop/v1/sticker/353004271/android/sticker.png"
     },
-     {
+    {
       text: "聽他說姿瑩要換工作了！而且剛好也接近生日了對吧！",
       image: "https://stickershop.line-scdn.net/stickershop/v1/sticker/353004271/android/sticker.png"
     },     
@@ -2692,7 +2726,7 @@ window.addEventListener('DOMContentLoaded', () => {
       text: "育豪也跟我說了！他被限制預算要1000元內！",
       image: "https://stickershop.line-scdn.net/stickershop/v1/sticker/353004271/android/sticker.png"
     },
-   {
+    {
       text: "但我有跟他說，隨然要給姿瑩最好的！可是姿瑩也是為了不讓你太花錢！",
       image: "https://stickershop.line-scdn.net/stickershop/v1/sticker/353004271/android/sticker.png"
     },
@@ -2704,7 +2738,7 @@ window.addEventListener('DOMContentLoaded', () => {
       text: "這個地方是育豪送妳的禮物！從現在開始妳就是這裡的主人！",
       image: "https://stickershop.line-scdn.net/stickershop/v1/sticker/353004271/android/sticker.png"
     },
-      {
+    {
       text: "雖然有點早，但他怕姿瑩在新的工作與環境需要時間，所以可以過生日的機會可能很低。",
       image: "https://stickershop.line-scdn.net/stickershop/v1/sticker/353004271/android/sticker.png"
     },
@@ -2736,10 +2770,10 @@ window.addEventListener('DOMContentLoaded', () => {
       text: "如果選擇障礙發作了，就交給酷洛米來幫妳吧 ♡",
       image: "https://stickershop.line-scdn.net/stickershop/v1/sticker/12981593/android/sticker.png"
     },
-   {
+    {
       text: "酷洛米在這裡也祝福妳們兩個！！漂亮飯順利！！",
       image: "https://stickershop.line-scdn.net/stickershop/v1/sticker/12981593/android/sticker.png"
-    },
+    }
   ];
 introScenes.forEach(scene => {
   const img = new Image();
@@ -2787,10 +2821,9 @@ typingTimer = setInterval(() => {
   const char = text.charAt(charIndex);
   introText.textContent += char;
 
-  if (typeSound && char.trim() !== "") {
-    typeSound.currentTime = 0;
-    typeSound.play().catch(()=>{});
-  }
+  if (char.trim() !== "") {
+  playTypeTick();
+}
 
   charIndex++;
 
@@ -2803,26 +2836,19 @@ typingTimer = setInterval(() => {
     }
   }, introTypingSpeed);
 }
-
-  function showIntroScene() {
+function showIntroScene() {
   const scene = introScenes[introIndex];
   if (!scene) return;
 
   changeIntroImage(scene.image);
 
-  if (kuromiVoice) {
+  if (kuromiVoice && audioUnlocked) {
     kuromiVoice.currentTime = 0;
-    kuromiVoice.play().catch(()=>{});
+    kuromiVoice.play().catch(() => {});
   }
 
   typeIntroText(scene.text);
 }
-    const scene = introScenes[introIndex];
-    if (!scene) return;
-    changeIntroImage(scene.image);
-    typeIntroText(scene.text);
-  }
-
   function finishTypingImmediately() {
     clearInterval(typingTimer);
     typingTimer = null;
@@ -2861,24 +2887,21 @@ typingTimer = setInterval(() => {
   if (introOverlay && introDialog && introText && introHint && introFigure) {
     showIntroScene();
 
-    introDialog.addEventListener('click', nextIntroLine);
+introDialog.addEventListener('click', () => {
+  unlockAudio();
+  nextIntroLine();
+});
 
     introDialog.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        nextIntroLine();
-      }
-    });
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    unlockAudio();
+    nextIntroLine();
+  }
+});
   }
 });
  
   </script>
-  <audio id="typeSound" preload="auto">
-  <source src="type.mp3" type="audio/mpeg">
-</audio>
-
-<audio id="kuromiVoice" preload="auto">
-  <source src="kuromi-voice.mp3" type="audio/mpeg">
-</audio>
 </body>
 </html>
