@@ -2863,12 +2863,12 @@ function playTypeTick() {
   if (!typeSound || !introState.audioUnlocked) return;
 
   const now = Date.now();
-  if (now - introState.lastTypeTickTime < 35) return;
+  if (now - introState.lastTypeTickTime < 80) return;
   introState.lastTypeTickTime = now;
 
   const tick = typeSound.cloneNode(true);
   tick.volume = 0.12;
-  tick.playbackRate = 1.12;
+  tick.playbackRate = 0.7;
   tick.play().catch(() => {});
 }
 
