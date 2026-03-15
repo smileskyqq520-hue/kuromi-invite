@@ -1429,12 +1429,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 180px;
+  min-height: 300px;
 }
 
 .intro-figure{
-  width: 170px;
-  max-width: 42vw;
+  width: 340px;
+  max-width: 70vw;
   height: auto;
   object-fit: contain;
   filter: drop-shadow(0 16px 28px rgba(0,0,0,.35));
@@ -1498,8 +1498,8 @@
   }
 
   .intro-figure{
-    width: 120px;
-    max-width: 48vw;
+    width: 220px;
+    max-width: 68vw;
   }
 
   .intro-dialog{
@@ -2674,17 +2674,7 @@ introScenes.forEach(scene => {
     introFigure.classList.add('swap');
   }
 
-  function typeIntroText(text) {
-    clearInterval(typingTimer);
-    fullCurrentText = text;
-    introText.textContent = "";
-    introText.classList.add("typing");
-    isTypingIntro = true;
-    updateIntroHint();
-
-    let charIndex = 0;
-
-    function typeIntroText(text) {
+function typeIntroText(text) {
   clearInterval(typingTimer);
   fullCurrentText = text;
   introText.textContent = "";
