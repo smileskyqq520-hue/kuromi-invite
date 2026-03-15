@@ -1794,6 +1794,13 @@
     </div>
   </div>
 </div>
+<audio id="typeSound" preload="auto">
+  <source src="type.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="kuromiVoice" preload="auto">
+  <source src="kuromi-voice.mp3" type="audio/mpeg">
+</audio>
   <script>
     const restaurants = [
       {
@@ -2625,7 +2632,9 @@ window.addEventListener('DOMContentLoaded', () => {
   const introText = document.getElementById('introText');
   const introHint = document.getElementById('introHint');
   const introFigure = document.getElementById('introFigure');
-
+  const typeSound = document.getElementById('typeSound');
+  const kuromiVoice = document.getElementById('kuromiVoice');
+  
   const introScenes = [
     {
       text: "姿瑩歡迎來到酷洛米的小叢林 ✦",
@@ -2773,9 +2782,17 @@ function typeIntroText(text) {
   let charIndex = 0;
   const introTypingSpeed = 50;
 
-  typingTimer = setInterval(() => {
-    introText.textContent += text.charAt(charIndex);
-    charIndex++;
+typingTimer = setInterval(() => {
+
+  const char = text.charAt(charIndex);
+  introText.textContent += char;
+
+  if (typeSound && char.trim() !== "") {
+    typeSound.currentTime = 0;
+    typeSound.play().catch(()=>{});
+  }
+
+  charIndex++;
 
     if (charIndex >= text.length) {
       clearInterval(typingTimer);
@@ -2788,6 +2805,18 @@ function typeIntroText(text) {
 }
 
   function showIntroScene() {
+  const scene = introScenes[introIndex];
+  if (!scene) return;
+
+  changeIntroImage(scene.image);
+
+  if (kuromiVoice) {
+    kuromiVoice.currentTime = 0;
+    kuromiVoice.play().catch(()=>{});
+  }
+
+  typeIntroText(scene.text);
+}
     const scene = introScenes[introIndex];
     if (!scene) return;
     changeIntroImage(scene.image);
@@ -2844,5 +2873,12 @@ function typeIntroText(text) {
 });
  
   </script>
+  <audio id="typeSound" preload="auto">
+  <source src="type.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="kuromiVoice" preload="auto">
+  <source src="kuromi-voice.mp3" type="audio/mpeg">
+</audio>
 </body>
 </html>
