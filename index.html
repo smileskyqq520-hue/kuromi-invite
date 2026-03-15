@@ -2655,24 +2655,26 @@ function unlockAudio() {
   }
 }
 
+let lastTypeTickTime = 0;
+
 function playTypeTick() {
   if (!typeSound || !audioUnlocked) return;
+
+  const now = Date.now();
+  if (now - lastTypeTickTime < 35) return;
+  lastTypeTickTime = now;
 
   const tick = typeSound.cloneNode(true);
   tick.volume = 0.18;
   tick.playbackRate = 1.12;
   tick.play().catch(() => {});
-
-  tick.addEventListener('ended', () => {
-    tick.remove();
-  });
 }
   if (typeSound) typeSound.volume = 0.18;
 if (kuromiVoice) kuromiVoice.volume = 0.35;
   const introScenes = [
     {
       text: "姿瑩歡迎來到酷洛米的小叢林 ✦",
-      image: "https://pic.pngsucai.com/00/09/84/9a80989b91db0cc5.webp"
+      image: "https://stickershop.line-scdn.net/stickershop/v1/sticker/353004271/android/sticker.png"
     },
     { 
       text: "既然姿瑩可以來到這裡！就代表育豪那小子應該有把好吃的草莓馬卡龍安全送到吧!",
@@ -2708,7 +2710,7 @@ if (kuromiVoice) kuromiVoice.volume = 0.35;
     },
     {
       text: "這裡是我的設計者幫妳偷偷準備的漂亮飯選擇網站。",
-      image: "https://store.line.me/stickershop/product/15526/zh-Hant"
+      image: "https://stickershop.line-scdn.net/stickershop/v1/product/15526/LINEStorePC/main.png?v=1"
     },
     {
       text: "設計者就是育豪！他說姿瑩很喜歡酷洛米，所以拜託我免費來跟姿瑩聊聊天。",
@@ -2744,7 +2746,7 @@ if (kuromiVoice) kuromiVoice.volume = 0.35;
     },
     {
       text: "所以我會幫妳揍他兩拳！姿瑩就體諒一下他吧！",
-      image: "https://s1.aigei.com/src/img/png/43/431be1b2a83742ecba5006e762249a92.png?e=2051020800&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:NQYzWAlaAplw1JGB5qR82lncBF0="
+      image: "https://stickershop.line-scdn.net/stickershop/v1/sticker/13274542/android/sticker.png"
     },
     {
       text: "這個地方是育豪送妳的禮物！從現在開始妳就是這裡的主人！",
@@ -2788,7 +2790,7 @@ if (kuromiVoice) kuromiVoice.volume = 0.35;
     },
     {
       text: "如果選擇障礙發作了，就交給酷洛米來幫妳吧 ♡",
-      image: "https://stickershop.line-scdn.net/stickershop/v1/sticker/12981593/android/sticker.png"
+      image: "https://stickershop.line-scdn.net/stickershop/v1/product/18811/LINEStorePC/main.png?v=1"
     },
     {
       text: "酷洛米在這裡也祝福妳們兩個！！漂亮飯順利！！",
