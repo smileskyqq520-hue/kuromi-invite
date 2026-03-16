@@ -3167,41 +3167,35 @@ function addChat(text, type) {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-function kuromiReply(userText) {
-  let reply = "";
-  const text = userText.toLowerCase();
+async function kuromiReply(userText) {
 
-  if (text.includes("餐廳") || text.includes("吃什麼") || text.includes("漂亮飯")) {
-    reply = "酷洛米：如果妳選擇障礙發作，我也可以幫妳選餐廳唷 ✦";
-  } 
-  else if (text.includes("甜點") || text.includes("蛋糕") || text.includes("草莓")) {
-    reply = "酷洛米：甜點真的超重要，尤其是草莓系更犯規 ♡";
-  } 
-  else if (text.includes("時間") || text.includes("哪天") || text.includes("幾點")) {
-    reply = "酷洛米：時間也可以慢慢挑，不用急，我會陪妳。";
-  } 
-  else if (text.includes("育豪")) {
-    reply = "酷洛米：那傢伙真的很努力做這個網站欸。";
-  } 
-  else if (text.includes("你好") || text.includes("哈囉") || text.includes("嗨")) {
-    reply = "酷洛米：哈囉呀！終於來找我聊天了 ♡";
-  } 
-  else if (text.includes("累") || text.includes("煩") || text.includes("猶豫")) {
-    reply = "酷洛米：沒關係，慢慢選就好，我在這裡陪妳。";
-  } 
-  else if (text.includes("謝謝")) {
-    reply = "酷洛米：哼哼，不客氣啦，但妳還是要記得我最可愛。";
-  } 
-  else if (text.includes("bye") || text.includes("掰掰") || text.includes("再見")) {
-    reply = "酷洛米：那先這樣啦，想聊天再回來找我 ♡";
-  } 
-  else {
-    reply = "酷洛米：我有在聽喔～妳可以問我餐廳、時間、甜點，或是偷偷聊育豪。";
+  try {
+
+    const response = await fetch(
+      "https://dry-lake-3c60.smileskyqq520.workers.dev/",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          message: userText
+        })
+      }
+    );
+
+    const data = await response.json();
+
+    addChat(data.reply, "chat-kuromi");
+
+  } catch (error) {
+
+    addChat(
+      "酷洛米：欸？我剛剛恍神了一下，再跟我說一次嘛。",
+      "chat-kuromi"
+    );
+
   }
-
-  setTimeout(() => {
-    addChat(reply, "chat-kuromi");
-  }, 600);
 }
 
 sendBtn.addEventListener("click", () => {
