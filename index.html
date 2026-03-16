@@ -1609,7 +1609,7 @@
   <a href="#time">時間選擇</a>
   <a href="#invite">邀約預覽</a>
   <a href="#games">小遊戲</a>
-  <a href="#games">想找酷洛米</a>
+  <a href="#kuromi-chat">酷洛米</a>
 </nav>
     </div>
   </header>
@@ -1817,7 +1817,7 @@
 </div>
     </div>
   </div>
- <div class="box" style="margin-top:24px;">
+<div class="box" id="kuromi-chat" style="margin-top:24px;">
   <h3>③ 和酷洛米聊天</h3>
 
   <div id="kuromiChatBox" class="chat-box"></div>
@@ -3136,18 +3136,6 @@ window.addEventListener('DOMContentLoaded', () => {
 });const chatBox = document.getElementById("kuromiChatBox");
 const chatInput = document.getElementById("kuromiInput");
 const sendBtn = document.getElementById("sendKuromi");
-
-const kuromiReplies = [
-  "酷洛米：欸？妳居然跟我聊天。",
-  "酷洛米：育豪好像很努力做這個網站欸。",
-  "酷洛米：今天要不要選一個漂亮飯？",
-  "酷洛米：甜點看起來很好吃。",
-  "酷洛米：妳是不是在猶豫餐廳？",
-  "酷洛米：其實我比較想吃甜點。",
-  "酷洛米：如果妳選餐廳，育豪應該會很開心。",
-  "酷洛米：不過我還是最可愛的。"
-];
-
 function addChat(text, type) {
 
   const msg = document.createElement("div");
@@ -3208,7 +3196,7 @@ function kuromiReply(userText) {
     reply = "酷洛米：那先這樣啦，想聊天再回來找我 ♡";
   } 
   else {
-    reply = kuromiReplies[Math.floor(Math.random() * kuromiReplies.length)];
+    reply = "酷洛米：我有在聽喔～妳可以問我餐廳、時間、甜點，或是偷偷聊育豪。";
   }
 
   setTimeout(() => {
