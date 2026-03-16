@@ -1508,28 +1508,61 @@
     min-height: 200px;
   }
 }
-  .chat-box{
-  height:220px;
+.chat-box{
+  height:240px;
   overflow-y:auto;
   background:rgba(0,0,0,.25);
   border-radius:16px;
-  padding:12px;
-  margin-bottom:10px;
+  padding:14px;
+  margin-top:16px;
+  margin-bottom:14px;
   font-size:14px;
 }
 
+/* 每一條訊息 */
 .chat-msg{
-  margin:6px 0;
+  display:flex;
+  align-items:flex-end;
+  margin:8px 0;
 }
 
+/* Kuromi訊息 */
 .chat-kuromi{
+  justify-content:flex-start;
+}
+
+/* 使用者訊息 */
+.chat-user{
+  justify-content:flex-end;
+}
+
+/* Kuromi頭像 */
+.chat-avatar{
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  margin-right:8px;
+}
+
+/* 對話泡泡 */
+.chat-bubble{
+  max-width:70%;
+  padding:10px 14px;
+  border-radius:16px;
+  line-height:1.6;
+}
+
+/* Kuromi泡泡 */
+.chat-kuromi .chat-bubble{
+  background:#3a1f48;
   color:#ffb1ea;
 }
 
-.chat-user{
-  color:#ffffff;
+/* 使用者泡泡 */
+.chat-user .chat-bubble{
+  background:#9256ff;
+  color:white;
 }
-
 .chat-input{
   display:flex;
   gap:8px;
@@ -1784,7 +1817,7 @@
 </div>
     </div>
   </div>
-    <div class="box">
+ <div class="box" style="margin-top:24px;">
   <h3>③ 和酷洛米聊天</h3>
 
   <div id="kuromiChatBox" class="chat-box"></div>
@@ -3100,52 +3133,107 @@ function startIntro(forceReplay = false) {
 window.addEventListener('DOMContentLoaded', () => {
   setupIntroReplay();
   startIntro(false);
-});
- const chatBox = document.getElementById("kuromiChatBox");
+});const chatBox = document.getElementById("kuromiChatBox");
 const chatInput = document.getElementById("kuromiInput");
 const sendBtn = document.getElementById("sendKuromi");
 
 const kuromiReplies = [
-"酷洛米：欸？妳居然跟我聊天。",
-"酷洛米：育豪好像很努力做這個網站欸。",
-"酷洛米：今天要不要選一個漂亮飯？",
-"酷洛米：甜點看起來很好吃。",
-"酷洛米：妳是不是在猶豫餐廳？",
-"酷洛米：其實我比較想吃甜點。",
-"酷洛米：如果妳選餐廳，育豪應該會很開心。",
-"酷洛米：不過我還是最可愛的。"
+  "酷洛米：欸？妳居然跟我聊天。",
+  "酷洛米：育豪好像很努力做這個網站欸。",
+  "酷洛米：今天要不要選一個漂亮飯？",
+  "酷洛米：甜點看起來很好吃。",
+  "酷洛米：妳是不是在猶豫餐廳？",
+  "酷洛米：其實我比較想吃甜點。",
+  "酷洛米：如果妳選餐廳，育豪應該會很開心。",
+  "酷洛米：不過我還是最可愛的。"
 ];
 
-function addChat(text,type){
+function addChat(text, type) {
 
-  const div=document.createElement("div");
-  div.className="chat-msg "+type;
-  div.textContent=text;
+  const msg = document.createElement("div");
+  msg.className = "chat-msg " + type;
 
-  chatBox.appendChild(div);
-  chatBox.scrollTop=chatBox.scrollHeight;
+  if(type === "chat-kuromi"){
+
+    const avatar = document.createElement("img");
+    avatar.src = "https://stickershop.line-scdn.net/stickershop/v1/sticker/353004277/ANDROID/sticker.png";
+    avatar.className = "chat-avatar";
+
+    const bubble = document.createElement("div");
+    bubble.className = "chat-bubble";
+    bubble.textContent = text;
+
+    msg.appendChild(avatar);
+    msg.appendChild(bubble);
+
+  }else{
+
+    const bubble = document.createElement("div");
+    bubble.className = "chat-bubble";
+    bubble.textContent = text;
+
+    msg.appendChild(bubble);
+  }
+
+  chatBox.appendChild(msg);
+  chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-function kuromiReply(){
+function kuromiReply(userText) {
+  let reply = "";
+  const text = userText.toLowerCase();
 
-  const reply=kuromiReplies[Math.floor(Math.random()*kuromiReplies.length)];
+  if (text.includes("餐廳") || text.includes("吃什麼") || text.includes("漂亮飯")) {
+    reply = "酷洛米：如果妳選擇障礙發作，我也可以幫妳選餐廳唷 ✦";
+  } 
+  else if (text.includes("甜點") || text.includes("蛋糕") || text.includes("草莓")) {
+    reply = "酷洛米：甜點真的超重要，尤其是草莓系更犯規 ♡";
+  } 
+  else if (text.includes("時間") || text.includes("哪天") || text.includes("幾點")) {
+    reply = "酷洛米：時間也可以慢慢挑，不用急，我會陪妳。";
+  } 
+  else if (text.includes("育豪")) {
+    reply = "酷洛米：那傢伙真的很努力做這個網站欸。";
+  } 
+  else if (text.includes("你好") || text.includes("哈囉") || text.includes("嗨")) {
+    reply = "酷洛米：哈囉呀！終於來找我聊天了 ♡";
+  } 
+  else if (text.includes("累") || text.includes("煩") || text.includes("猶豫")) {
+    reply = "酷洛米：沒關係，慢慢選就好，我在這裡陪妳。";
+  } 
+  else if (text.includes("謝謝")) {
+    reply = "酷洛米：哼哼，不客氣啦，但妳還是要記得我最可愛。";
+  } 
+  else if (text.includes("bye") || text.includes("掰掰") || text.includes("再見")) {
+    reply = "酷洛米：那先這樣啦，想聊天再回來找我 ♡";
+  } 
+  else {
+    reply = kuromiReplies[Math.floor(Math.random() * kuromiReplies.length)];
+  }
 
-  setTimeout(()=>{
-    addChat(reply,"chat-kuromi");
-  },600);
+  setTimeout(() => {
+    addChat(reply, "chat-kuromi");
+  }, 600);
 }
 
-sendBtn.addEventListener("click",()=>{
+sendBtn.addEventListener("click", () => {
+  const text = chatInput.value.trim();
+  if (!text) return;
 
-  const text=chatInput.value.trim();
-  if(!text) return;
+  addChat("姿瑩：" + text, "chat-user");
+  chatInput.value = "";
 
-  addChat("姿瑩："+text,"chat-user");
-
-  chatInput.value="";
-
-  kuromiReply();
+  kuromiReply(text);
 });
+
+chatInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    sendBtn.click();
+  }
+});
+
+addChat("酷洛米：歡迎來找我聊天呀 ♡", "chat-kuromi");
   </script>
 </body>
 </html>
