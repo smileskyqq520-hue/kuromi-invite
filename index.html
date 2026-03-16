@@ -1508,6 +1508,48 @@
     min-height: 200px;
   }
 }
+  .chat-box{
+  height:220px;
+  overflow-y:auto;
+  background:rgba(0,0,0,.25);
+  border-radius:16px;
+  padding:12px;
+  margin-bottom:10px;
+  font-size:14px;
+}
+
+.chat-msg{
+  margin:6px 0;
+}
+
+.chat-kuromi{
+  color:#ffb1ea;
+}
+
+.chat-user{
+  color:#ffffff;
+}
+
+.chat-input{
+  display:flex;
+  gap:8px;
+}
+
+.chat-input input{
+  flex:1;
+  border:none;
+  padding:10px;
+  border-radius:12px;
+}
+
+.chat-input button{
+  background:#9256ff;
+  color:white;
+  border:none;
+  padding:8px 14px;
+  border-radius:12px;
+  cursor:pointer;
+}
   </style>
 </head>
 <body>
@@ -1534,6 +1576,7 @@
   <a href="#time">時間選擇</a>
   <a href="#invite">邀約預覽</a>
   <a href="#games">小遊戲</a>
+  <a href="#games">想找酷洛米</a>
 </nav>
     </div>
   </header>
@@ -1741,6 +1784,16 @@
 </div>
     </div>
   </div>
+    <div class="box">
+  <h3>③ 和酷洛米聊天</h3>
+
+  <div id="kuromiChatBox" class="chat-box"></div>
+
+  <div class="chat-input">
+    <input id="kuromiInput" placeholder="跟酷洛米說一句話..." />
+    <button id="sendKuromi">送出</button>
+  </div>
+</div>
 </section>
 
 <img
@@ -3048,7 +3101,51 @@ window.addEventListener('DOMContentLoaded', () => {
   setupIntroReplay();
   startIntro(false);
 });
- 
+ const chatBox = document.getElementById("kuromiChatBox");
+const chatInput = document.getElementById("kuromiInput");
+const sendBtn = document.getElementById("sendKuromi");
+
+const kuromiReplies = [
+"酷洛米：欸？妳居然跟我聊天。",
+"酷洛米：育豪好像很努力做這個網站欸。",
+"酷洛米：今天要不要選一個漂亮飯？",
+"酷洛米：甜點看起來很好吃。",
+"酷洛米：妳是不是在猶豫餐廳？",
+"酷洛米：其實我比較想吃甜點。",
+"酷洛米：如果妳選餐廳，育豪應該會很開心。",
+"酷洛米：不過我還是最可愛的。"
+];
+
+function addChat(text,type){
+
+  const div=document.createElement("div");
+  div.className="chat-msg "+type;
+  div.textContent=text;
+
+  chatBox.appendChild(div);
+  chatBox.scrollTop=chatBox.scrollHeight;
+}
+
+function kuromiReply(){
+
+  const reply=kuromiReplies[Math.floor(Math.random()*kuromiReplies.length)];
+
+  setTimeout(()=>{
+    addChat(reply,"chat-kuromi");
+  },600);
+}
+
+sendBtn.addEventListener("click",()=>{
+
+  const text=chatInput.value.trim();
+  if(!text) return;
+
+  addChat("姿瑩："+text,"chat-user");
+
+  chatInput.value="";
+
+  kuromiReply();
+});
   </script>
 </body>
 </html>
