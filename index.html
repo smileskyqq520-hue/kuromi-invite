@@ -3182,13 +3182,24 @@ async function kuromiReply(userText) {
       }
     );
 
-    const data = await response.json();
-    console.log("Worker回傳內容：", data);
+    const rawText = await response.text();
+    console.log("HTTP狀態：", response.status);
+    console.log("Worker原始回傳：", rawText);
 
-    addChat(JSON.stringify(data), "chat-kuromi");
+    if (!response.ok) {
+      throw new Error("HTTP " + response.status + "：" + rawText);
+    }
+
+    const data = JSON.parse(rawText);
+
+    addChat(
+      data.reply || data.response || data.text || "酷洛米：我剛剛腦袋轉了一圈，但還沒接好訊號。",
+      "chat-kuromi"
+    );
 
   } catch (error) {
     console.error("聊天API錯誤：", error);
+
     addChat(
       "酷洛米：欸？我剛剛恍神了一下，再跟我說一次嘛。",
       "chat-kuromi"
