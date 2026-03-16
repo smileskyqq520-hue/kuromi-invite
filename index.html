@@ -3168,9 +3168,7 @@ function addChat(text, type) {
 }
 
 async function kuromiReply(userText) {
-
   try {
-
     const response = await fetch(
       "https://dry-lake-3c60.smileskyqq520.workers.dev/",
       {
@@ -3185,16 +3183,16 @@ async function kuromiReply(userText) {
     );
 
     const data = await response.json();
+    console.log("Worker回傳內容：", data);
 
-    addChat(data.reply, "chat-kuromi");
+    addChat(JSON.stringify(data), "chat-kuromi");
 
   } catch (error) {
-
+    console.error("聊天API錯誤：", error);
     addChat(
       "酷洛米：欸？我剛剛恍神了一下，再跟我說一次嘛。",
       "chat-kuromi"
     );
-
   }
 }
 
