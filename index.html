@@ -3193,7 +3193,7 @@ async function kuromiReply(userText) {
     const data = JSON.parse(rawText);
 
     addChat(
-      data.reply || data.response || data.text || "酷洛米：我剛剛腦袋轉了一圈，但還沒接好訊號。",
+      data.reply || "酷洛米：我有聽到，但剛剛想了一下怎麼回妳。",
       "chat-kuromi"
     );
 
