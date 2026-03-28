@@ -3134,87 +3134,124 @@ window.addEventListener('DOMContentLoaded', () => {
   setupIntroReplay();
   startIntro(false);
 });
-    const chatBox = document.getElementById("kuromiChatBox");
+const chatBox = document.getElementById("kuromiChatBox");
 const input = document.getElementById("kuromiInput");
- // ===== Kuromi Chat AI =====
-  const chatBox = document.getElementById("kuromiChatBox");
-  const input = document.getElementById("kuromiInput");
-  const sendBtn = document.getElementById("sendKuromi");
+const sendBtn = document.getElementById("sendKuromi");
 
-  let chatHistory = [
-    {
-      role: "assistant",
-      content: "哼～姿瑩終於來找我聊天了嗎 ♡"
-    }
-  ];
-
-  function createAvatar() {
-    const avatar = document.createElement("img");
-    avatar.src = "https://stickershop.line-scdn.net/stickershop/v1/sticker/353004277/ANDROID/sticker.png";
-    avatar.className = "chat-avatar";
-    avatar.alt = "Kuromi";
-    return avatar;
+let chatHistory = [
+  {
+    role: "assistant",
+    content: "哼～姿瑩終於來找我聊天了嗎 ♡"
   }
+];
 
-  function addMessage(role, text) {
-    const msg = document.createElement("div");
-    msg.className = "chat-msg " + (role === "user" ? "chat-user" : "chat-kuromi");
+function createAvatar() {
+  const avatar = document.createElement("img");
+  avatar.src = "https://stickershop.line-scdn.net/stickershop/v1/sticker/353004277/ANDROID/sticker.png";
+  avatar.className = "chat-avatar";
+  avatar.alt = "Kuromi";
+  return avatar;
+}
 
-    if (role === "assistant") {
-      msg.appendChild(createAvatar());
-    }
+function addMessage(role, text) {
+  const msg = document.createElement("div");
+  msg.className = "chat-msg " + (role === "user" ? "chat-user" : "chat-kuromi");
 
-    const bubble = document.createElement("div");
-    bubble.className = "chat-bubble";
-    bubble.textContent = text;
-
-    msg.appendChild(bubble);
-    chatBox.appendChild(msg);
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }
-
-  async function typeKuromi(text) {
-    const msg = document.createElement("div");
-    msg.className = "chat-msg chat-kuromi";
-
+  if (role === "assistant") {
     msg.appendChild(createAvatar());
-
-    const bubble = document.createElement("div");
-    bubble.className = "chat-bubble";
-    msg.appendChild(bubble);
-
-    chatBox.appendChild(msg);
-
-    for (let i = 0; i < text.length; i++) {
-      bubble.textContent += text[i];
-      chatBox.scrollTop = chatBox.scrollHeight;
-      await new Promise(resolve => setTimeout(resolve, 18));
-    }
   }
 
-  async function sendMessage() {
-    const text = input.value.trim();
-    if (!text) return;
+  const bubble = document.createElement("div");
+  bubble.className = "chat-bubble";
+  bubble.textContent = text;
 
-    addMessage("user", text);
-    chatHistory.push({
-      role: "user",
-      content: text
+  msg.appendChild(bubble);
+  chatBox.appendChild(msg);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+async function typeKuromi(text) {
+  const msg = document.createElement("div");
+  msg.className = "chat-msg chat-kuromi";
+
+  msg.appendChild(createAvatar());
+
+  const bubble = document.createElement("div");
+  bubble.className = "chat-bubble";
+  msg.appendChild(bubble);
+
+  chatBox.appendChild(msg);
+
+  for (let i = 0; i < text.length; i++) {
+    bubble.textContent += text[i];
+    chatBox.scrollTop = chatBox.scrollHeight;
+    await new Promise(resolve => setTimeout(resolve, 18));
+  }
+}
+
+async function sendMessage() {
+  const text = input.value.trim();
+  if (!text) return;
+
+  addMessage("user", text);
+  chatHistory.push({
+    role: "user",
+    content: text
+  });
+
+  input.value = "";
+  sendBtn.disabled = true;
+
+  try {
+    const res = await fetch("https://dry-lake-3c60.smileskyqq520.workers.dev/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: text,
+        history: chatHistory.slice(-12)
+      })
     });
 
-    input.value = "";
+    if (!res.ok) {
+      throw new Error("API request failed");
+    }
 
-    try {
-      const res = await fetch("https://dry-lake-3c60.smileskyqq520.workers.dev/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          message: text,
-          history: chatHistory.slice(-12)
-        })
-      });
+    const data = await res.json();
+    const reply = data.reply || "酷洛米剛剛恍神了，再跟我說一次嘛 ♡";
+
+    chatHistory.push({
+      role: "assistant",
+      content: reply
+    });
+
+    await typeKuromi(reply);
+  } catch (error) {
+    const fallback = "酷洛米現在有點忙線中，晚點再找我聊天好嗎 ♡";
+
+    chatHistory.push({
+      role: "assistant",
+      content: fallback
+    });
+
+    await typeKuromi(fallback);
+    console.error(error);
+  } finally {
+    sendBtn.disabled = false;
+  }
+}
+
+sendBtn.addEventListener("click", sendMessage);
+
+input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+addMessage("assistant", "哼～姿瑩終於來找我聊天了嗎 ♡");
 
   </script>
 </body>
