@@ -3275,7 +3275,7 @@ function renderChatHistory() {
 
   chatHistory.forEach(item => {
     const mood = item.role === "assistant" ? detectMood(item.content) : "normal";
-    addMessage(item.role, item.content, mood, true);
+    addMessage(item.role, item.content, mood, false);
   });
 }
 
@@ -3326,10 +3326,11 @@ async function sendMessage() {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        message: text,
-        history: chatHistory.slice(-12)
-      })
+     body: JSON.stringify({
+  message: text,
+  history: chatHistory.slice(-12),
+  intimacy: intimacy   // ⭐ 新增
+})
     });
 
     if (!res.ok) {
@@ -3339,12 +3340,7 @@ async function sendMessage() {
     const data = await res.json();
     let reply = data.reply || "酷洛米剛剛恍神了，再跟我說一次嘛 ♡";
 
-// 💖 親密度影響語氣
-if (intimacy > 20) {
-  reply += "（酷洛米非常喜歡妳♡）";
-} else if (intimacy > 10) {
-  reply += "（酷洛米覺得跟你聊天很開心♡）";
-}
+
 const mood = detectMood(reply);
 
 chatHistory.push({
