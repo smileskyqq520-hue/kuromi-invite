@@ -3140,12 +3140,21 @@ const sendBtn = document.getElementById("sendKuromi");
 
 const CHAT_STORAGE_KEY = "kuromiChatHistory";
 
-let chatHistory = JSON.parse(localStorage.getItem(CHAT_STORAGE_KEY) || "null") || [
+let chatHistory = [
   {
     role: "assistant",
     content: "哼～姿瑩終於來找我聊天了嗎 ♡"
   }
 ];
+
+try {
+  const savedHistory = JSON.parse(localStorage.getItem(CHAT_STORAGE_KEY) || "null");
+  if (Array.isArray(savedHistory) && savedHistory.length) {
+    chatHistory = savedHistory;
+  }
+} catch (error) {
+  localStorage.removeItem(CHAT_STORAGE_KEY);
+}
 
 function saveChatHistory() {
   localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(chatHistory));
