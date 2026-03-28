@@ -3136,41 +3136,58 @@ window.addEventListener('DOMContentLoaded', () => {
 });
     const chatBox = document.getElementById("kuromiChatBox");
 const input = document.getElementById("kuromiInput");
-const sendBtn = document.getElementById("sendKuromi");
 
-// ⭐ 記憶（關鍵）
-let history = [];
+    // ===== Kuromi Chat AI =====
 
-// ⭐ 加入訊息UI
+let history = [
+  {
+    role: "assistant",
+    content: "哼～姿瑩終於來找我聊天了嗎 ♡"
+  }
+];
+
+// 顯示訊息
 function addMessage(role, text) {
+  const box = document.getElementById("kuromiChatBox");
+
   const msg = document.createElement("div");
   msg.className = "chat-msg " + (role === "user" ? "chat-user" : "chat-kuromi");
 
-  if (role === "assistant") {
-    const avatar = document.createElement("img");
-    avatar.src = "https://stickershop.line-scdn.net/stickershop/v1/sticker/353004277/ANDROID/sticker.png";
-    avatar.className = "chat-avatar";
-    msg.appendChild(avatar);
-  }
+  msg.innerHTML = `<div class="chat-bubble">${text}</div>`;
+  box.appendChild(msg);
+
+  box.scrollTop = box.scrollHeight;
+}
+
+// 打字效果（超重要🔥）
+async function typeKuromi(text) {
+  const box = document.getElementById("kuromiChatBox");
+
+  const msg = document.createElement("div");
+  msg.className = "chat-msg chat-kuromi";
 
   const bubble = document.createElement("div");
   bubble.className = "chat-bubble";
-  bubble.innerText = text;
-
   msg.appendChild(bubble);
-  chatBox.appendChild(msg);
 
-  chatBox.scrollTop = chatBox.scrollHeight;
+  box.appendChild(msg);
+
+  let i = 0;
+  while (i < text.length) {
+    bubble.textContent += text[i];
+    i++;
+    await new Promise(r => setTimeout(r, 18)); // 打字速度
+    box.scrollTop = box.scrollHeight;
+  }
 }
 
-// ⭐ 發送訊息
+// 傳送訊息
 async function sendMessage() {
+  const input = document.getElementById("kuromiInput");
   const text = input.value.trim();
   if (!text) return;
 
   addMessage("user", text);
-
-  // ⭐ 存進記憶
   history.push({ role: "user", content: text });
 
   input.value = "";
@@ -3183,28 +3200,33 @@ async function sendMessage() {
       },
       body: JSON.stringify({
         message: text,
-        history: history   // ⭐這行最重要
+        history: history
       })
     });
 
     const data = await res.json();
 
-    const reply = data.reply || "酷洛米：欸？我剛剛恍神了一下，再說一次嘛。";
+    await typeKuromi(data.reply);
 
-    addMessage("assistant", reply);
+    history.push({
+      role: "assistant",
+      content: data.reply
+    });
 
-    // ⭐ 存AI回覆
-    history.push({ role: "assistant", content: reply });
-
-  } catch (e) {
-    addMessage("assistant", "酷洛米：嗚哇…我剛剛腦袋打結了！");
+  } catch (err) {
+    addMessage("assistant", "酷洛米：欸…我剛剛恍神了一下，再說一次嘛 ♡");
   }
 }
 
-// ⭐事件
-sendBtn.onclick = sendMessage;
-input.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") sendMessage();
+// 綁定按鈕
+document.getElementById("sendKuromi").onclick = sendMessage;
+
+// Enter送出
+document.getElementById("kuromiInput").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    sendMessage();
+  }
 });
   </script>
 </body>
