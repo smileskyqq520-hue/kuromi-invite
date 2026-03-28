@@ -3237,6 +3237,89 @@ chatInput.addEventListener("keydown", (e) => {
 });
 
 addChat("酷洛米：姿瑩是不是很想找我聊天呀 ♡", "chat-kuromi");
+    // ===== Kuromi Chat 記憶版 =====
+
+const chatBox = document.getElementById("kuromiChatBox");
+const input = document.getElementById("kuromiInput");
+const sendBtn = document.getElementById("sendKuromi");
+
+// ⭐ 記憶存在這裡
+let chatHistory = [];
+
+// 加一則訊息到畫面
+function addMessage(role, text) {
+  const row = document.createElement("div");
+  row.className = "chat-msg " + (role === "assistant" ? "chat-kuromi" : "chat-user");
+
+  if (role === "assistant") {
+    const avatar = document.createElement("img");
+    avatar.src = "https://stickershop.line-scdn.net/stickershop/v1/sticker/353004277/ANDROID/sticker.png";
+    avatar.className = "chat-avatar";
+    row.appendChild(avatar);
+  }
+
+  const bubble = document.createElement("div");
+  bubble.className = "chat-bubble";
+  bubble.innerText = text;
+
+  row.appendChild(bubble);
+  chatBox.appendChild(row);
+
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// 發送訊息
+async function sendMessage() {
+  const text = input.value.trim();
+  if (!text) return;
+
+  addMessage("user", text);
+
+  // ⭐ 加進記憶
+  chatHistory.push({
+    role: "user",
+    content: text
+  });
+
+  input.value = "";
+
+  try {
+    const res = await fetch("https://dry-lake-3c60.smileskyqq520.workers.dev/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: text,
+        history: chatHistory   // ⭐ 傳記憶給後端
+      })
+    });
+
+    const data = await res.json();
+    const reply = data.reply || "Kuromi壞掉了";
+
+    addMessage("assistant", reply);
+
+    // ⭐ 把 AI 回覆也存起來
+    chatHistory.push({
+      role: "assistant",
+      content: reply
+    });
+
+  } catch (e) {
+    addMessage("assistant", "酷洛米：嗚哇我壞掉了啦！");
+  }
+}
+
+// 按鈕送出
+sendBtn.addEventListener("click", sendMessage);
+
+// Enter送出
+input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    sendMessage();
+  }
+});
   </script>
 </body>
 </html>
