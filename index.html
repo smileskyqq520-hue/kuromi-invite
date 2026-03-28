@@ -3136,98 +3136,86 @@ window.addEventListener('DOMContentLoaded', () => {
 });
     const chatBox = document.getElementById("kuromiChatBox");
 const input = document.getElementById("kuromiInput");
-
-    // ===== Kuromi Chat AI =====
-
-let history = [
-  {
-    role: "assistant",
-    content: "哼～姿瑩終於來找我聊天了嗎 ♡"
-  }
-];
-
-// 顯示訊息
-function addMessage(role, text) {
-  const box = document.getElementById("kuromiChatBox");
-
-  const msg = document.createElement("div");
-  msg.className = "chat-msg " + (role === "user" ? "chat-user" : "chat-kuromi");
-
-  msg.innerHTML = `<div class="chat-bubble">${text}</div>`;
-  box.appendChild(msg);
-
-  box.scrollTop = box.scrollHeight;
-}
-
-// 打字效果（超重要🔥）
-async function typeKuromi(text) {
-  const box = document.getElementById("kuromiChatBox");
-
-  const msg = document.createElement("div");
-  msg.className = "chat-msg chat-kuromi";
-
-  const bubble = document.createElement("div");
-  bubble.className = "chat-bubble";
-  msg.appendChild(bubble);
-
-  box.appendChild(msg);
-
-  let i = 0;
-  while (i < text.length) {
-    bubble.textContent += text[i];
-    i++;
-    await new Promise(r => setTimeout(r, 18)); // 打字速度
-    box.scrollTop = box.scrollHeight;
-  }
-}
-
-// 傳送訊息
-async function sendMessage() {
+ // ===== Kuromi Chat AI =====
+  const chatBox = document.getElementById("kuromiChatBox");
   const input = document.getElementById("kuromiInput");
-  const text = input.value.trim();
-  if (!text) return;
+  const sendBtn = document.getElementById("sendKuromi");
 
-  addMessage("user", text);
-  history.push({ role: "user", content: text });
-
-  input.value = "";
-
-  try {
-    const res = await fetch("https://dry-lake-3c60.smileskyqq520.workers.dev/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        message: text,
-        history: history
-      })
-    });
-
-    const data = await res.json();
-
-    await typeKuromi(data.reply);
-
-    history.push({
+  let chatHistory = [
+    {
       role: "assistant",
-      content: data.reply
+      content: "哼～姿瑩終於來找我聊天了嗎 ♡"
+    }
+  ];
+
+  function createAvatar() {
+    const avatar = document.createElement("img");
+    avatar.src = "https://stickershop.line-scdn.net/stickershop/v1/sticker/353004277/ANDROID/sticker.png";
+    avatar.className = "chat-avatar";
+    avatar.alt = "Kuromi";
+    return avatar;
+  }
+
+  function addMessage(role, text) {
+    const msg = document.createElement("div");
+    msg.className = "chat-msg " + (role === "user" ? "chat-user" : "chat-kuromi");
+
+    if (role === "assistant") {
+      msg.appendChild(createAvatar());
+    }
+
+    const bubble = document.createElement("div");
+    bubble.className = "chat-bubble";
+    bubble.textContent = text;
+
+    msg.appendChild(bubble);
+    chatBox.appendChild(msg);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  async function typeKuromi(text) {
+    const msg = document.createElement("div");
+    msg.className = "chat-msg chat-kuromi";
+
+    msg.appendChild(createAvatar());
+
+    const bubble = document.createElement("div");
+    bubble.className = "chat-bubble";
+    msg.appendChild(bubble);
+
+    chatBox.appendChild(msg);
+
+    for (let i = 0; i < text.length; i++) {
+      bubble.textContent += text[i];
+      chatBox.scrollTop = chatBox.scrollHeight;
+      await new Promise(resolve => setTimeout(resolve, 18));
+    }
+  }
+
+  async function sendMessage() {
+    const text = input.value.trim();
+    if (!text) return;
+
+    addMessage("user", text);
+    chatHistory.push({
+      role: "user",
+      content: text
     });
 
-  } catch (err) {
-    addMessage("assistant", "酷洛米：欸…我剛剛恍神了一下，再說一次嘛 ♡");
-  }
-}
+    input.value = "";
 
-// 綁定按鈕
-document.getElementById("sendKuromi").onclick = sendMessage;
+    try {
+      const res = await fetch("https://dry-lake-3c60.smileskyqq520.workers.dev/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          message: text,
+          history: chatHistory.slice(-12)
+        })
+      });
 
-// Enter送出
-document.getElementById("kuromiInput").addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    sendMessage();
-  }
-});
   </script>
 </body>
 </html>
