@@ -3218,6 +3218,75 @@ input.addEventListener("keydown", (e) => {
     sendMessage();
   }
 });
+    const chatBox = document.getElementById("kuromiChatBox");
+const input = document.getElementById("kuromiInput");
+const sendBtn = document.getElementById("sendKuromi");
+
+// 記憶
+let chatMemory = [];
+
+function addMsg(text, type) {
+  const msg = document.createElement("div");
+  msg.className = "chat-msg " + type;
+
+  const bubble = document.createElement("div");
+  bubble.className = "chat-bubble";
+  bubble.innerText = text;
+
+  msg.appendChild(bubble);
+  chatBox.appendChild(msg);
+
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// 傳給 AI
+async function sendToAI(message) {
+  try {
+    const res = await fetch("https://dry-lake-3c60.smileskyqq520.workers.dev/", {  // ← 換成你的！
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: message,
+        history: chatMemory
+      })
+    });
+
+    const data = await res.json();
+    return data.reply;
+
+  } catch (err) {
+    return "酷洛米：欸？我剛剛恍神了一下，再跟我說一次嘛。";
+  }
+}
+
+// 送出
+async function handleSend() {
+  const text = input.value.trim();
+  if (!text) return;
+
+  addMsg(text, "chat-user");
+
+  chatMemory.push({ role: "user", content: text });
+
+  input.value = "";
+
+  const reply = await sendToAI(text);
+
+  addMsg(reply, "chat-kuromi");
+
+  chatMemory.push({ role: "assistant", content: reply });
+}
+
+// 事件
+sendBtn.onclick = handleSend;
+input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") handleSend();
+});
+
+// 初始訊息
+addMsg("酷洛米：哼～姿瑩終於來找我了嗎 ♡", "chat-kuromi");
   </script>
 </body>
 </html>
