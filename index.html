@@ -3138,12 +3138,18 @@ const chatBox = document.getElementById("kuromiChatBox");
 const input = document.getElementById("kuromiInput");
 const sendBtn = document.getElementById("sendKuromi");
 
-let chatHistory = [
+const CHAT_STORAGE_KEY = "kuromiChatHistory";
+
+let chatHistory = JSON.parse(localStorage.getItem(CHAT_STORAGE_KEY) || "null") || [
   {
     role: "assistant",
     content: "哼～姿瑩終於來找我聊天了嗎 ♡"
   }
 ];
+
+function saveChatHistory() {
+  localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(chatHistory));
+}
 
 function createAvatar() {
   const avatar = document.createElement("img");
@@ -3168,6 +3174,13 @@ function addMessage(role, text) {
   msg.appendChild(bubble);
   chatBox.appendChild(msg);
   chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function renderChatHistory() {
+  chatBox.innerHTML = "";
+  chatHistory.forEach(item => {
+    addMessage(item.role, item.content);
+  });
 }
 
 async function typeKuromi(text) {
@@ -3198,6 +3211,7 @@ async function sendMessage() {
     role: "user",
     content: text
   });
+  saveChatHistory();
 
   input.value = "";
   sendBtn.disabled = true;
@@ -3225,6 +3239,7 @@ async function sendMessage() {
       role: "assistant",
       content: reply
     });
+    saveChatHistory();
 
     await typeKuromi(reply);
   } catch (error) {
@@ -3234,6 +3249,7 @@ async function sendMessage() {
       role: "assistant",
       content: fallback
     });
+    saveChatHistory();
 
     await typeKuromi(fallback);
     console.error(error);
@@ -3251,7 +3267,7 @@ input.addEventListener("keydown", (e) => {
   }
 });
 
-addMessage("assistant", "哼～姿瑩終於來找我聊天了嗎 ♡");
+renderChatHistory();
 
   </script>
 </body>
