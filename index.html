@@ -3355,8 +3355,9 @@ updateIntimacyBar();
 saveChatHistory();
 
 await typeKuromi(reply, mood);
-  } catch (error) {
- const fallback = "酷洛米現在有點忙線中，晚點再找我聊天好嗎 ♡";
+  } catch (err) {
+  console.error("聊天錯誤：", err);
+  addMessage("assistant", "酷洛米：連線失敗了，幫我看一下 F12 紅字 ♡");
 const mood = detectMood(fallback);
 
 chatHistory.push({
